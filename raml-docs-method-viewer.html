@@ -1,0 +1,137 @@
+<!--
+@license
+Copyright 2016 The Advanced REST client authors <arc@mulesoft.com>
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../raml-behaviors/raml-behavior.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../prism-element/prism-import.html">
+<link rel="import" href="../prism-element/prism-theme-default.html">
+<!--
+`<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
+
+### Example
+```
+<raml-docs-method-viewer></raml-docs-method-viewer>
+```
+
+### Styling
+`<raml-docs-method-viewer>` provides the following custom properties and mixins for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--raml-docs-method-viewer` | Mixin applied to the element | `{}`
+
+@group RAML Elements
+@element raml-docs-method-viewer
+@demo demo/index.html
+-->
+<dom-module id="raml-docs-method-viewer">
+  <template>
+    <style include="prism-theme-default"></style>
+    <style>
+     :host {
+      display: block;
+    }
+
+    h1 {
+      @apply(--paper-font-headline);
+    }
+
+    h2 {
+      @apply(--paper-font-title);
+    }
+
+    h3 {
+      @apply(--paper-font-subhead);
+      padding: 8px 12px;
+    }
+
+    .method-name {
+      font-weight: 500;
+    }
+
+    .title-area {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    .title {
+      @apply(--layout-flex);
+    }
+    </style>
+    <div class="title-area">
+      <h1 class="title">
+        <span>[[_computeEndpointName(parentEndpoint.*)]]</span>
+        <span>:</span>
+        <span class="method-name">[[_computeMethodName(raml.*)]]</span>
+      </h1>
+      <div class="action" hidden$="[[noTryit]]">
+        <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+      </div>
+    </div>
+    <div hidden$="[[_computeHideMethodDesc(raml.description)]]" class="method-desc">[[raml.description]]</div>
+
+    <section class="request-doc">
+      <h2>Request</h2>
+      <div class="url-area">
+        <div class="method-value">[[raml.method]]</div>
+        <div class="url-value">[[_computeUrl(baseUri, parentEndpoint.fullUrl)]]</div>
+      </div>
+    </section>
+
+    <section class="response-doc">
+
+    </section>
+  </template>
+  <script>
+  Polymer({
+    is: 'raml-docs-method-viewer',
+    properties: {
+      // Parent endpoint object
+      parentEndpoint: {
+        type: Object,
+        value: false
+      },
+      // API's base URL from the RAML definition.
+      baseUri: String
+    },
+
+    _computeMethodName: function() {
+      var m = this.raml;
+      if (!m) {
+        return '';
+      }
+      return m.displayName || m.method;
+    },
+
+    _computeHideMethodDesc: function(description) {
+      return !description;
+    },
+
+    _computeEndpointName: function() {
+      var endpoint = this.parentEndpoint;
+      if (!endpoint) {
+        return '';
+      }
+      return endpoint.displayName || endpoint.relativeUri;
+    },
+
+    _computeUrl: function(base, path) {
+      return base + path;
+    }
+
+  });
+  </script>
+</dom-module>
