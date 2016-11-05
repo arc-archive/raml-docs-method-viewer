@@ -18,6 +18,8 @@ the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../prism-element/prism-import.html">
 <link rel="import" href="../prism-element/prism-theme-default.html">
+<link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
+<link rel="import" href="../docs-parameters-table/docs-headers-table.html">
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -87,8 +89,10 @@ Custom property | Description | Default
       <h2>Request</h2>
       <div class="url-area">
         <div class="method-value">[[raml.method]]</div>
-        <div class="url-value">[[_computeUrl(baseUri, parentEndpoint.fullUrl)]]</div>
+        <div class="url-value">[[raml.fullUrl]]</div>
       </div>
+
+      <docs-parameters-table uri-parameters="[[parentEndpoint.uriParameters]]" query-parameters="[[raml.queryParameters]]"></docs-parameters-table>
     </section>
 
     <section class="response-doc">
