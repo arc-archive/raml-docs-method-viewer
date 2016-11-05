@@ -20,6 +20,7 @@ the License.
 <link rel="import" href="../prism-element/prism-theme-default.html">
 <link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
 <link rel="import" href="../docs-parameters-table/docs-headers-table.html">
+<link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -43,21 +44,28 @@ Custom property | Description | Default
   <template>
     <style include="prism-theme-default"></style>
     <style>
-     :host {
+    :host {
       display: block;
+      @apply(--raml-docs-method-viewer);
+
+      --content-section: {
+        padding: 8px 12px;
+      }
     }
 
     h1 {
       @apply(--paper-font-headline);
+      @apply(--content-section);
     }
 
     h2 {
       @apply(--paper-font-title);
+      @apply(--content-section);
     }
 
     h3 {
       @apply(--paper-font-subhead);
-      padding: 8px 12px;
+      @apply(--content-section);
     }
 
     .method-name {
@@ -72,6 +80,31 @@ Custom property | Description | Default
     .title {
       @apply(--layout-flex);
     }
+
+    .method-desc {
+      @apply(--paper-font-body1);
+      @apply(--content-section);
+    }
+
+    .url-area {
+      @apply(--layout-horizontal);
+      @apply(--paper-font-body1);
+      font-size: 16px;
+      margin-bottom: 40px;
+      color: var(--accent-color);
+      @apply(--content-section);
+    }
+
+    .method-value {
+      font-weight: 500;
+    }
+
+    .url-value {
+      font-style: italic;
+      margin-left: 12px;
+      word-break: break-all;
+    }
+
     </style>
     <div class="title-area">
       <h1 class="title">
@@ -87,12 +120,27 @@ Custom property | Description | Default
 
     <section class="request-doc">
       <h2>Request</h2>
+
       <div class="url-area">
         <div class="method-value">[[raml.method]]</div>
         <div class="url-value">[[raml.fullUrl]]</div>
       </div>
 
-      <docs-parameters-table uri-parameters="[[parentEndpoint.uriParameters]]" query-parameters="[[raml.queryParameters]]"></docs-parameters-table>
+      <h3>Parameters</h3>
+      <docs-parameters-table uri-parameters="[[raml.uriParameters]]" query-parameters="[[raml.queryParameters]]" auto-hide></docs-parameters-table>
+      <!-- TODO: hasHeaders will not notify. -->
+      <h3 hidden$="[[!hasHeaders]]">Headers</h3>
+      <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
+
+      <h3>Body</h3>
+      <paper-dropdown-menu label="Body type">
+        <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
+          <template is="dom-repeat" items="[[bodyTypes]]">
+            <paper-item data-type$="[[item]]">[[item]]</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <docs-body-parameters-table type="[[selectedBody]]" auto-hide></docs-body-parameters-table>
     </section>
 
     <section class="response-doc">
@@ -109,8 +157,32 @@ Custom property | Description | Default
         value: false
       },
       // API's base URL from the RAML definition.
-      baseUri: String
+      baseUri: String,
+      // Computed names of the body types
+      bodyTypes: {
+        type: Array,
+        computed: '_computeBodyTypes(raml.*)'
+      },
+      /**
+       * Compyted value if the body selector can be shown.
+       * Body selector can be shown if there is more than one mody defined.
+       */
+      displayBodySelector: {
+        type: Boolean,
+        computed: '_computeDisplayBodySelector(bodyTypes.length)'
+      },
+      // A name of the selected body type. E.g. "application/json".
+      selectedBodyType: String,
+      // Definition of the body for `selectedBodyType`
+      selectedBody: {
+        type: Object,
+        computed: '_computeSelectedBody(selectedBodyType)'
+      }
     },
+
+    observers: [
+      '_bodyTypesChanged(bodyTypes)'
+    ],
 
     _computeMethodName: function() {
       var m = this.raml;
@@ -134,6 +206,33 @@ Custom property | Description | Default
 
     _computeUrl: function(base, path) {
       return base + path;
+    },
+
+    _computeBodyTypes: function() {
+      var raml = this.raml;
+      if (!raml || !raml.body) {
+        return;
+      }
+      return Object.getOwnPropertyNames(raml.body);
+    },
+
+    _computeDisplayBodySelector: function(size) {
+      return !!(size && size > 1);
+    },
+
+    _computeSelectedBody: function(selectedBodyType) {
+      if (!selectedBodyType) {
+        return;
+      }
+      return this.raml.body[selectedBodyType];
+    },
+
+    _bodyTypesChanged: function(bodyTypes) {
+      if (!bodyTypes || !bodyTypes.length) {
+        this.selectedBodyType = undefined;
+        return;
+      }
+      this.selectedBodyType = bodyTypes[0];
     }
 
   });
