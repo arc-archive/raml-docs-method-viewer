@@ -126,21 +126,23 @@ Custom property | Description | Default
         <div class="url-value">[[raml.fullUrl]]</div>
       </div>
 
-      <h3>Parameters</h3>
-      <docs-parameters-table uri-parameters="[[raml.uriParameters]]" query-parameters="[[raml.queryParameters]]" auto-hide></docs-parameters-table>
-      <!-- TODO: hasHeaders will not notify. -->
+      <h3 hidden$="[[!hasParameters]]">Parameters</h3>
+      <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.uriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+
       <h3 hidden$="[[!hasHeaders]]">Headers</h3>
       <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
 
-      <h3>Body</h3>
-      <paper-dropdown-menu label="Body type">
-        <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
-          <template is="dom-repeat" items="[[bodyTypes]]">
-            <paper-item data-type$="[[item]]">[[item]]</paper-item>
-          </template>
-        </paper-listbox>
-      </paper-dropdown-menu>
-      <docs-body-parameters-table type="[[selectedBody]]" auto-hide></docs-body-parameters-table>
+      <div hidden$="[[!hasBody]]">
+        <h3>Body</h3>
+        <paper-dropdown-menu label="Body type">
+          <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
+            <template is="dom-repeat" items="[[bodyTypes]]">
+              <paper-item data-type$="[[item]]">[[item]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <docs-body-parameters-table type="[[selectedBody]]" auto-hide></docs-body-parameters-table>
+      </div>
     </section>
 
     <section class="response-doc">
@@ -163,6 +165,12 @@ Custom property | Description | Default
         type: Array,
         computed: '_computeBodyTypes(raml.*)'
       },
+      // True if current endpont has a body
+      hasBody: {
+        value: false,
+        type: Boolean,
+        computed: '_computeHasBody(bodyTypes.length)'
+      },
       /**
        * Compyted value if the body selector can be shown.
        * Body selector can be shown if there is more than one mody defined.
@@ -177,6 +185,16 @@ Custom property | Description | Default
       selectedBody: {
         type: Object,
         computed: '_computeSelectedBody(selectedBodyType)'
+      },
+      // Value obtained from the `docs-parameters-table`
+      hasUriParameteres: Boolean,
+      // Value obtained from the `docs-parameters-table`
+      hasQueryParameteres: Boolean,
+      // Computed flag if there are any parameters to display
+      hasParameters: {
+        value: false,
+        type: Boolean,
+        computed: '_computeHasParameters(hasUriParameteres,hasQueryParameteres)'
       }
     },
 
@@ -233,6 +251,14 @@ Custom property | Description | Default
         return;
       }
       this.selectedBodyType = bodyTypes[0];
+    },
+
+    _computeHasParameters: function(hasUriParameteres, hasQueryParameteres) {
+      return hasUriParameteres || hasQueryParameteres;
+    },
+
+    _computeHasBody: function(size) {
+      return !!(size && size > 0);
     }
 
   });
