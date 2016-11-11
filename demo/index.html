@@ -18,11 +18,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+  <link rel="import" href="../../paper-listbox/paper-listbox.html">
+  <link rel="import" href="../../paper-item/paper-item.html">
   <link rel="import" href="../../raml-docs-helpers/raml-docs-parser.html">
+  <link rel="import" href="../../raml-path-to-object/raml-path-to-object.html">
   <link rel="import" href="../raml-docs-method-viewer.html">
   <style is="custom-style" include="demo-pages-shared-styles">
+  body {
+    background-color: #f5f5f5;
+  }
   .vertical-section-container {
     max-width: 600px;
+  }
+
+  raml-docs-method-viewer {
+    background-color: #ffffff;
   }
   </style>
 </head>
@@ -30,9 +41,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved>
   <template is="dom-bind" id="app">
     <div class="vertical-section-container centered">
-      <raml-docs-parser raml="{{raml}}"></raml-docs-parser>
+      <raml-docs-parser raml="{{raml}}" raml-file-url="https://raw.githubusercontent.com/advanced-rest-client/raml-example-api/master/api.raml"></raml-docs-parser>
+      <raml-path-to-object
+        raml="[[raml.specification]]"
+        selected-path="{{selectedPath}}"
+        selected-object="{{selectedObject}}"
+        selected-parent="{{selectedParent}}"
+        is-method="{{isSelectedMethod}}"></raml-path-to-object>
       <h3>The `raml-docs-method-viewer`</h3>
-      <raml-docs-method-viewer raml="[[selectedMethod]]" parent-endpoint="[[methodParent]]" base-uri="[[raml.specification.baseUri]]"></raml-docs-method-viewer>
+      <template is="dom-if" if="[[methods]]">
+        <paper-dropdown-menu label="Selected method">
+          <paper-listbox class="dropdown-content" attr-for-selected="data-path" selected="{{selectedPath}}">
+            <template is="dom-repeat" items="[[methods]]">
+              <paper-item data-path$="[[item.path]]">[[item.endpoint]]: [[item.name]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </template>
+      <raml-docs-method-viewer hidden$="[[!isSelectedMethod]]" raml="[[selectedObject]]" parent-endpoint="[[selectedParent]]" base-uri="[[raml.specification.baseUri]]"></raml-docs-method-viewer>
+      <p hidden$="[[isSelectedMethod]]" class="info">Method is not selected</p>
     </div>
   </template>
   <script>
@@ -40,18 +67,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     return document.querySelector(selector);
   };
   (function(app) {
+    app.selectedPath = '';
     app.raml = undefined;
-    app.selectedMethod = undefined;
-    app.methodParent = undefined;
-    app.observers = ['_ramlChanged(raml.*)'];
+    app.methods = undefined;
+    app.observers = [
+      '_ramlChanged(raml.*)'
+    ];
     app._ramlChanged = function() {
-      var r = app.raml;
-      if (!r) {
+      app.selectedPath = '';
+      var api = app.raml.specification;
+      if (!api) {
         return;
       }
-      var spec = r.specification;
-      app.selectedMethod = spec.resources[0].methods[0];
-      app.methodParent = spec.resources[0];
+      var data = [];
+      app._computePaths(data, '', '');
+      app.methods = data;
+    };
+    app._computePaths = function(arr, path, endpoint) {
+      var data = app.get('raml.specification' + path);
+      if (!data) {
+        return;
+      }
+      if (data.methods) {
+        data.methods.forEach(function(item, i) {
+          var _path = path + '.methods.' + i;
+          _path = _path.substr(1);
+          arr.push({
+            path: _path,
+            name: item.displayName || item.method,
+            endpoint: endpoint
+          });
+        });
+      }
+      if (data.resources) {
+        data.resources.forEach(function(item, i) {
+          var _endpointName;
+          if (item.displayName) {
+            _endpointName = ' > ' + item.displayName;
+          } else {
+            _endpointName = item.relativeUri;
+          }
+          _endpointName = _endpointName.trim();
+          app._computePaths(arr, path + '.resources.' + i, endpoint + _endpointName);
+        });
+      }
     };
   })($('#app'));
   </script>

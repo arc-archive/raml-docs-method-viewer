@@ -18,6 +18,12 @@ the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../prism-element/prism-import.html">
 <link rel="import" href="../prism-element/prism-theme-default.html">
+<link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
+<link rel="import" href="../docs-parameters-table/docs-headers-table.html">
+<link rel="import" href="../docs-parameters-table/docs-body-table.html">
+<link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
+<link rel="import" href="../raml-docs-response-panel/raml-docs-response-panel.html">
+
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -32,6 +38,15 @@ the License.
 Custom property | Description | Default
 ----------------|-------------|----------
 `--raml-docs-method-viewer` | Mixin applied to the element | `{}`
+`--raml-docs-h1` | Mixin applied to H1 | `{}` |
+`--raml-docs-h2` | Mixin applied to H2 | `{}` |
+`--raml-docs-h3` | Mixin applied to H3 | `{}` |
+`--raml-docs-method-viewer-title-method-font-weight` | Font weight of the name if the method | `500` |
+`--raml-docs-method-viewer-http-method-font-weight` | Font weight of the HTTP method | `500` |
+`--raml-docs-item-description` | Mixin applied to the description field. | `{}` |
+`--raml-docs-method-viewer-url-color` | Color of the URL field | `--accent-color` |
+`--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
+`--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
 
 @group RAML Elements
 @element raml-docs-method-viewer
@@ -41,25 +56,39 @@ Custom property | Description | Default
   <template>
     <style include="prism-theme-default"></style>
     <style>
-     :host {
+    :host {
       display: block;
+      @apply(--raml-docs-method-viewer);
+
+      --content-section: {
+        padding: 8px 12px;
+      }
     }
 
     h1 {
       @apply(--paper-font-headline);
+      @apply(--content-section);
+      @apply(--raml-docs-h1);
     }
 
     h2 {
       @apply(--paper-font-title);
+      @apply(--content-section);
+      @apply(--raml-docs-h2);
     }
 
     h3 {
       @apply(--paper-font-subhead);
-      padding: 8px 12px;
+      @apply(--content-section);
+      @apply(--raml-docs-h3);
     }
 
     .method-name {
-      font-weight: 500;
+      font-weight: var(--raml-docs-method-viewer-title-method-font-weight, 500);
+    }
+
+    .method-value {
+      font-weight: var(--raml-docs-method-viewer-http-method-font-weight, 500);
     }
 
     .title-area {
@@ -70,6 +99,33 @@ Custom property | Description | Default
     .title {
       @apply(--layout-flex);
     }
+
+    .method-desc {
+      @apply(--paper-font-body1);
+      @apply(--content-section);
+      @apply(--raml-docs-item-description);
+    }
+
+    .url-area {
+      @apply(--layout-horizontal);
+      @apply(--paper-font-body1);
+      font-size: 16px;
+      margin-bottom: 40px;
+      color: var(--raml-docs-method-viewer-url-color, --accent-color);
+      @apply(--content-section);
+    }
+
+    .url-value {
+      font-style: var(--raml-docs-method-viewer-url-font-style, italic);
+      margin-left: 12px;
+      word-break: break-all;
+      @apply(--raml-docs-method-viewer-url);
+    }
+
+    .body-selector {
+      margin: 0 12px;
+    }
+
     </style>
     <div class="title-area">
       <h1 class="title">
@@ -85,14 +141,34 @@ Custom property | Description | Default
 
     <section class="request-doc">
       <h2>Request</h2>
+
       <div class="url-area">
         <div class="method-value">[[raml.method]]</div>
-        <div class="url-value">[[_computeUrl(baseUri, parentEndpoint.fullUrl)]]</div>
+        <div class="url-value">[[raml.fullUrl]]</div>
+      </div>
+
+      <h3 hidden$="[[!hasParameters]]">Parameters</h3>
+      <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.uriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+
+      <h3 hidden$="[[!hasHeaders]]">Headers</h3>
+      <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
+
+      <div hidden$="[[!hasBody]]">
+        <h3>Body</h3>
+        <paper-dropdown-menu label="Body type" hidden$="[[!displayBodySelector]]" class="body-selector">
+          <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
+            <template is="dom-repeat" items="[[bodyTypes]]">
+              <paper-item data-type$="[[item]]">[[item]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <docs-body-parameters-table type="[[selectedBody]]"></docs-body-parameters-table>
       </div>
     </section>
 
-    <section class="response-doc">
-
+    <section class="response-doc" hidden$="[[!hasResponses]]">
+      <h2>Response</h2>
+      <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
     </section>
   </template>
   <script>
@@ -105,7 +181,64 @@ Custom property | Description | Default
         value: false
       },
       // API's base URL from the RAML definition.
-      baseUri: String
+      baseUri: String,
+      // Computed names of the body types
+      bodyTypes: Array,
+      // True if current endpont has a body
+      hasBody: {
+        value: false,
+        type: Boolean,
+        computed: '_computeHasBody(bodyTypes.length)'
+      },
+      /**
+       * Compyted value if the body selector can be shown.
+       * Body selector can be shown if there is more than one mody defined.
+       */
+      displayBodySelector: {
+        type: Boolean,
+        computed: '_computeDisplayBodySelector(bodyTypes.length)'
+      },
+      // A name of the selected body type. E.g. "application/json".
+      selectedBodyType: String,
+      // Definition of the body for `selectedBodyType`
+      selectedBody: {
+        type: Object,
+        computed: '_computeSelectedBody(selectedBodyType)'
+      },
+      // Value obtained from the `docs-parameters-table`
+      hasUriParameteres: Boolean,
+      // Value obtained from the `docs-parameters-table`
+      hasQueryParameteres: Boolean,
+      // Computed flag if there are any parameters to display
+      hasParameters: {
+        value: false,
+        type: Boolean,
+        computed: '_computeHasParameters(hasUriParameteres,hasQueryParameteres)'
+      },
+      // Value obtained from the `raml-docs-response-panel`
+      hasResponses: Boolean
+    },
+
+    observers: [
+      '_objectChanged(raml.*)',
+      '_bodyTypesChanged(bodyTypes)'
+    ],
+
+    // Resets the variables to the original state
+    clear: function() {
+      this.baseUri = undefined;
+      this.selectedBodyType = undefined;
+      this.hasUriParameteres = undefined;
+      this.hasQueryParameteres = undefined;
+      this.bodyTypes = [];
+    },
+
+    _objectChanged: function() {
+      this.clear();
+      if (!this.raml) {
+        return;
+      }
+      this.bodyTypes = this._computeBodyTypes();
     },
 
     _computeMethodName: function() {
@@ -130,6 +263,41 @@ Custom property | Description | Default
 
     _computeUrl: function(base, path) {
       return base + path;
+    },
+
+    _computeBodyTypes: function() {
+      var raml = this.raml;
+      if (!raml || !raml.body) {
+        return;
+      }
+      return Object.getOwnPropertyNames(raml.body);
+    },
+
+    _computeDisplayBodySelector: function(size) {
+      return !!(size && size > 1);
+    },
+
+    _computeSelectedBody: function(selectedBodyType) {
+      if (!selectedBodyType) {
+        return undefined;
+      }
+      return this.raml.body[selectedBodyType];
+    },
+
+    _bodyTypesChanged: function(bodyTypes) {
+      if (!bodyTypes || !bodyTypes.length) {
+        this.selectedBodyType = undefined;
+        return;
+      }
+      this.selectedBodyType = bodyTypes[0];
+    },
+
+    _computeHasParameters: function(hasUriParameteres, hasQueryParameteres) {
+      return hasUriParameteres || hasQueryParameteres;
+    },
+
+    _computeHasBody: function(size) {
+      return !!(size && size > 0);
     }
 
   });
