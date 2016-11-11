@@ -22,6 +22,8 @@ the License.
 <link rel="import" href="../docs-parameters-table/docs-headers-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
+<link rel="import" href="../raml-docs-response-panel/raml-docs-response-panel.html">
+
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -36,6 +38,15 @@ the License.
 Custom property | Description | Default
 ----------------|-------------|----------
 `--raml-docs-method-viewer` | Mixin applied to the element | `{}`
+`--raml-docs-h1` | Mixin applied to H1 | `{}` |
+`--raml-docs-h2` | Mixin applied to H2 | `{}` |
+`--raml-docs-h3` | Mixin applied to H3 | `{}` |
+`--raml-docs-method-viewer-title-method-font-weight` | Font weight of the name if the method | `500` |
+`--raml-docs-method-viewer-http-method-font-weight` | Font weight of the HTTP method | `500` |
+`--raml-docs-item-description` | Mixin applied to the description field. | `{}` |
+`--raml-docs-method-viewer-url-color` | Color of the URL field | `--accent-color` |
+`--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
+`--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
 
 @group RAML Elements
 @element raml-docs-method-viewer
@@ -57,20 +68,27 @@ Custom property | Description | Default
     h1 {
       @apply(--paper-font-headline);
       @apply(--content-section);
+      @apply(--raml-docs-h1);
     }
 
     h2 {
       @apply(--paper-font-title);
       @apply(--content-section);
+      @apply(--raml-docs-h2);
     }
 
     h3 {
       @apply(--paper-font-subhead);
       @apply(--content-section);
+      @apply(--raml-docs-h3);
     }
 
     .method-name {
-      font-weight: 500;
+      font-weight: var(--raml-docs-method-viewer-title-method-font-weight, 500);
+    }
+
+    .method-value {
+      font-weight: var(--raml-docs-method-viewer-http-method-font-weight, 500);
     }
 
     .title-area {
@@ -85,6 +103,7 @@ Custom property | Description | Default
     .method-desc {
       @apply(--paper-font-body1);
       @apply(--content-section);
+      @apply(--raml-docs-item-description);
     }
 
     .url-area {
@@ -92,18 +111,15 @@ Custom property | Description | Default
       @apply(--paper-font-body1);
       font-size: 16px;
       margin-bottom: 40px;
-      color: var(--accent-color);
+      color: var(--raml-docs-method-viewer-url-color, --accent-color);
       @apply(--content-section);
     }
 
-    .method-value {
-      font-weight: 500;
-    }
-
     .url-value {
-      font-style: italic;
+      font-style: var(--raml-docs-method-viewer-url-font-style, italic);
       margin-left: 12px;
       word-break: break-all;
+      @apply(--raml-docs-method-viewer-url);
     }
 
     .body-selector {
@@ -150,8 +166,9 @@ Custom property | Description | Default
       </div>
     </section>
 
-    <section class="response-doc">
+    <section class="response-doc" hidden$="[[!hasResponses]]">
       <h2>Response</h2>
+      <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
     </section>
   </template>
   <script>
@@ -197,7 +214,9 @@ Custom property | Description | Default
         value: false,
         type: Boolean,
         computed: '_computeHasParameters(hasUriParameteres,hasQueryParameteres)'
-      }
+      },
+      // Value obtained from the `raml-docs-response-panel`
+      hasResponses: Boolean
     },
 
     observers: [
@@ -205,6 +224,7 @@ Custom property | Description | Default
       '_bodyTypesChanged(bodyTypes)'
     ],
 
+    // Resets the variables to the original state
     clear: function() {
       this.baseUri = undefined;
       this.selectedBodyType = undefined;
