@@ -20,6 +20,7 @@ the License.
 <link rel="import" href="../prism-element/prism-theme-default.html">
 <link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
 <link rel="import" href="../docs-parameters-table/docs-headers-table.html">
+<link rel="import" href="../docs-parameters-table/docs-body-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
@@ -105,6 +106,10 @@ Custom property | Description | Default
       word-break: break-all;
     }
 
+    .body-selector {
+      margin: 0 12px;
+    }
+
     </style>
     <div class="title-area">
       <h1 class="title">
@@ -134,14 +139,15 @@ Custom property | Description | Default
 
       <div hidden$="[[!hasBody]]">
         <h3>Body</h3>
-        <paper-dropdown-menu label="Body type">
+        <paper-dropdown-menu label="Body type" hidden$="[[!displayBodySelector]]" class="body-selector">
           <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
             <template is="dom-repeat" items="[[bodyTypes]]">
               <paper-item data-type$="[[item]]">[[item]]</paper-item>
             </template>
           </paper-listbox>
         </paper-dropdown-menu>
-        <docs-body-parameters-table type="[[selectedBody]]" auto-hide></docs-body-parameters-table>
+        <!-- <docs-body-table type="[[selectedBody]]" auto-hide></docs-parameters-table> -->
+        <docs-body-parameters-table type="[[selectedBody]]"></docs-body-parameters-table>
       </div>
     </section>
 
@@ -161,10 +167,7 @@ Custom property | Description | Default
       // API's base URL from the RAML definition.
       baseUri: String,
       // Computed names of the body types
-      bodyTypes: {
-        type: Array,
-        computed: '_computeBodyTypes(raml.*)'
-      },
+      bodyTypes: Array,
       // True if current endpont has a body
       hasBody: {
         value: false,
@@ -199,8 +202,25 @@ Custom property | Description | Default
     },
 
     observers: [
+      '_objectChanged(raml.*)',
       '_bodyTypesChanged(bodyTypes)'
     ],
+
+    clear: function() {
+      this.baseUri = undefined;
+      this.selectedBodyType = undefined;
+      this.hasUriParameteres = undefined;
+      this.hasQueryParameteres = undefined;
+      this.bodyTypes = [];
+    },
+
+    _objectChanged: function() {
+      this.clear();
+      if (!this.raml) {
+        return;
+      }
+      this.bodyTypes = this._computeBodyTypes();
+    },
 
     _computeMethodName: function() {
       var m = this.raml;
@@ -240,7 +260,7 @@ Custom property | Description | Default
 
     _computeSelectedBody: function(selectedBodyType) {
       if (!selectedBodyType) {
-        return;
+        return undefined;
       }
       return this.raml.body[selectedBodyType];
     },

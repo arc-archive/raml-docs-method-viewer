@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved>
   <template is="dom-bind" id="app">
     <div class="vertical-section-container centered">
-      <raml-docs-parser raml="{{raml}}"></raml-docs-parser>
+      <raml-docs-parser raml="{{raml}}" raml-file-url="https://raw.githubusercontent.com/advanced-rest-client/raml-example-api/master/api.raml"></raml-docs-parser>
       <raml-path-to-object
         raml="[[raml.specification]]"
         selected-path="{{selectedPath}}"
