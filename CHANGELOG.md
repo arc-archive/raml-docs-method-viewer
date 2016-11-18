@@ -1,3 +1,13 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/1.0.1...v1.0.2) (2016-11-18)
+
+
+### New
+
+* Added event listeners for the <raml-path-to-object> element ([3af8dc220cd53567a84bc08f0cb85f9fb83a05ff](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/3af8dc220cd53567a84bc08f0cb85f9fb83a05ff))
+
+
+
 <a name="1.0.1"></a>
 ## 1.0.1 (2016-11-11)
 

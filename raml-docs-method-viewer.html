@@ -65,6 +65,10 @@ Custom property | Description | Default
       }
     }
 
+    :host([hidden]) {
+      display: none !important;
+    }
+
     h1 {
       @apply(--paper-font-headline);
       @apply(--content-section);
@@ -216,13 +220,72 @@ Custom property | Description | Default
         computed: '_computeHasParameters(hasUriParameteres,hasQueryParameteres)'
       },
       // Value obtained from the `raml-docs-response-panel`
-      hasResponses: Boolean
+      hasResponses: Boolean,
+      /**
+       * If true then the element will start listen for the
+       * `raml-is-method-changed`, `raml-selected-object-changed` and
+       * `raml-selected-path-changed` event and set corresponding properties
+       * when needed. It's a replacement for the Polymer's data biding
+       * for apps that are not Polymer powered.
+       */
+      autoHide: {
+        type: Boolean,
+        value: false,
+        observer: '_autoHideChanged'
+      },
+      // If true then the element will be hidden ui the UI.
+      hidden: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      }
     },
 
     observers: [
       '_objectChanged(raml.*)',
       '_bodyTypesChanged(bodyTypes)'
     ],
+
+    attached: function() {
+      this._eventTarget = Polymer.dom(this).host || document;
+      if (this.autoHide) {
+        this._attacheListeners();
+      }
+    },
+
+    _autoHideChanged: function(state) {
+      if (state) {
+        this._attacheListeners();
+      } else {
+        this._detachListeners();
+      }
+    },
+
+    _attacheListeners: function() {
+      if (!this._eventTarget) {
+        this.hidden = true;
+        return;
+      }
+      this._detachListeners();
+      this.listen(this._eventTarget, 'raml-is-method-changed',
+        '_isMethodHandler');
+      this.listen(this._eventTarget, 'raml-selected-object-changed',
+        '_selectedChangeHandler');
+      this.listen(this._eventTarget, 'raml-selected-parent-changed',
+        '_selectedParentChangeHandler');
+    },
+
+    _detachListeners: function() {
+      if (!this._eventTarget) {
+        return;
+      }
+      this.unlisten(this._eventTarget, 'raml-is-method-changed',
+        '_isMethodHandler');
+      this.unlisten(this._eventTarget, 'raml-selected-object-changed',
+        '_selectedChangeHandler');
+      this.unlisten(this._eventTarget, 'raml-selected-parent-changed',
+        '_selectedParentChangeHandler');
+    },
 
     // Resets the variables to the original state
     clear: function() {
@@ -235,6 +298,7 @@ Custom property | Description | Default
 
     _objectChanged: function() {
       this.clear();
+      // this.hidden = false;
       if (!this.raml) {
         return;
       }
@@ -298,8 +362,28 @@ Custom property | Description | Default
 
     _computeHasBody: function(size) {
       return !!(size && size > 0);
-    }
+    },
 
+    _isMethodHandler: function(e, detail) {
+      var state = detail.state;
+      this.hidden = !state;
+    },
+
+    _selectedChangeHandler: function(e, detail) {
+      if (this.hidden) {
+        this.raml = undefined;
+        return;
+      }
+      this.raml = detail.selectedObject;
+    },
+
+    _selectedParentChangeHandler: function(e, detail) {
+      if (this.hidden) {
+        this.parentEndpoint = undefined;
+        return;
+      }
+      this.parentEndpoint = detail.selectedParent;
+    }
   });
   </script>
 </dom-module>
