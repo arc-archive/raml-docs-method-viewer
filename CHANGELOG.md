@@ -1,3 +1,13 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/1.0.2...v1.0.3) (2016-12-06)
+
+
+### Update
+
+* Updated element to work with new data structure ([7a751656124dcc5e711e2493fdbc2f6c3358d146](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/7a751656124dcc5e711e2493fdbc2f6c3358d146))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/1.0.1...v1.0.2) (2016-11-18)
 

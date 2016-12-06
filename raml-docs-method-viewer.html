@@ -27,10 +27,19 @@ the License.
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
+This element is meant to work with data structure returned by the
+`<raml-js-parser>` and `<raml-path-to-object>`. Regular JSON output from the
+RAML JS parser will not work with this element.
+
 ### Example
 ```
-<raml-docs-method-viewer></raml-docs-method-viewer>
+<raml-docs-method-viewer
+  raml="[[methodDefinition]]"
+  parent-endpoint="[[selectedParent]]"></raml-docs-method-viewer>
 ```
+To properly compute values displayed in the view it needs to know its
+`parentEndpoint`. Though, it will work properly if the parent is not passed.
+Parent is used to display title of the method.
 
 ### Styling
 `<raml-docs-method-viewer>` provides the following custom properties and mixins for styling:
@@ -148,11 +157,11 @@ Custom property | Description | Default
 
       <div class="url-area">
         <div class="method-value">[[raml.method]]</div>
-        <div class="url-value">[[raml.fullUrl]]</div>
+        <div class="url-value">[[raml.absoluteUrl]]</div>
       </div>
 
       <h3 hidden$="[[!hasParameters]]">Parameters</h3>
-      <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.uriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+      <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.allUriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
 
       <h3 hidden$="[[!hasHeaders]]">Headers</h3>
       <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
@@ -178,14 +187,17 @@ Custom property | Description | Default
   <script>
   Polymer({
     is: 'raml-docs-method-viewer',
+    /**
+     * Fired when the user pressed the `try it` button.
+     *
+     * @event tryit
+     */
     properties: {
       // Parent endpoint object
       parentEndpoint: {
         type: Object,
         value: false
       },
-      // API's base URL from the RAML definition.
-      baseUri: String,
       // Computed names of the body types
       bodyTypes: Array,
       // True if current endpont has a body
@@ -289,7 +301,6 @@ Custom property | Description | Default
 
     // Resets the variables to the original state
     clear: function() {
-      this.baseUri = undefined;
       this.selectedBodyType = undefined;
       this.hasUriParameteres = undefined;
       this.hasQueryParameteres = undefined;
@@ -325,16 +336,15 @@ Custom property | Description | Default
       return endpoint.displayName || endpoint.relativeUri;
     },
 
-    _computeUrl: function(base, path) {
-      return base + path;
-    },
-
     _computeBodyTypes: function() {
       var raml = this.raml;
       if (!raml || !raml.body) {
         return;
       }
-      return Object.getOwnPropertyNames(raml.body);
+      var mime = raml.body.map(function(item) {
+        return item.key;
+      });
+      return mime;
     },
 
     _computeDisplayBodySelector: function(size) {
@@ -345,7 +355,12 @@ Custom property | Description | Default
       if (!selectedBodyType) {
         return undefined;
       }
-      return this.raml.body[selectedBodyType];
+      var body = this.raml.body;
+      for (var i = 0, len = body.length; i < len; i++) {
+        if (body[i].key === selectedBodyType) {
+          return body[i];
+        }
+      }
     },
 
     _bodyTypesChanged: function(bodyTypes) {
@@ -383,6 +398,10 @@ Custom property | Description | Default
         return;
       }
       this.parentEndpoint = detail.selectedParent;
+    },
+
+    _tryIt: function() {
+      this.fire('tryit');
     }
   });
   </script>
