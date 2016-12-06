@@ -21,8 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../paper-listbox/paper-listbox.html">
   <link rel="import" href="../../paper-item/paper-item.html">
-  <link rel="import" href="../../raml-docs-helpers/raml-docs-parser.html">
   <link rel="import" href="../../raml-path-to-object/raml-path-to-object.html">
+  <link rel="import" href="../../arc-demo-helpers/raml-demo-parser.html">
   <link rel="import" href="../raml-docs-method-viewer.html">
   <style is="custom-style" include="demo-pages-shared-styles">
   body {
@@ -41,9 +41,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved>
   <template is="dom-bind" id="app">
     <div class="vertical-section-container centered">
-      <raml-docs-parser raml="{{raml}}" raml-file-url="https://raw.githubusercontent.com/advanced-rest-client/raml-example-api/master/api.raml"></raml-docs-parser>
+      <raml-demo-parser raml="{{raml}}" raml-file-url="https://raw.githubusercontent.com/advanced-rest-client/raml-example-api/master/api.raml"></raml-demo-parser>
       <raml-path-to-object
-        raml="[[raml.specification]]"
+        raml="[[raml]]"
         selected-path="{{selectedPath}}"
         selected-object="{{selectedObject}}"
         selected-parent="{{selectedParent}}"
@@ -58,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-listbox>
         </paper-dropdown-menu>
       </template>
-      <raml-docs-method-viewer hidden$="[[!isSelectedMethod]]" raml="[[selectedObject]]" parent-endpoint="[[selectedParent]]" base-uri="[[raml.specification.baseUri]]"></raml-docs-method-viewer>
+      <raml-docs-method-viewer hidden$="[[!isSelectedMethod]]" raml="[[selectedObject]]" parent-endpoint="[[selectedParent]]" base-uri="[[raml.baseUri]]"></raml-docs-method-viewer>
       <p hidden$="[[isSelectedMethod]]" class="info">Method is not selected</p>
     </div>
   </template>
@@ -75,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     ];
     app._ramlChanged = function() {
       app.selectedPath = '';
-      var api = app.raml.specification;
+      var api = app.raml;
       if (!api) {
         return;
       }
@@ -84,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.methods = data;
     };
     app._computePaths = function(arr, path, endpoint) {
-      var data = app.get('raml.specification' + path);
+      var data = app.get('raml' + path);
       if (!data) {
         return;
       }
