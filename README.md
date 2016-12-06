@@ -1,10 +1,22 @@
+[![Build Status](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer.svg?branch=master)](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer)  [![Dependency Status](https://dependencyci.com/github/advanced-rest-client/raml-docs-method-viewer/badge)](https://dependencyci.com/github/advanced-rest-client/raml-docs-method-viewer)  
+
+# raml-docs-method-viewer
 
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
+This element is meant to work with data structure returned by the
+`<raml-js-parser>` and `<raml-path-to-object>`. Regular JSON output from the
+RAML JS parser will not work with this element.
+
 ### Example
 ```
-<raml-docs-method-viewer></raml-docs-method-viewer>
+<raml-docs-method-viewer
+  raml="[[methodDefinition]]"
+  parent-endpoint="[[selectedParent]]"></raml-docs-method-viewer>
 ```
+To properly compute values displayed in the view it needs to know its
+`parentEndpoint`. Though, it will work properly if the parent is not passed.
+Parent is used to display title of the method.
 
 ### Styling
 `<raml-docs-method-viewer>` provides the following custom properties and mixins for styling:
@@ -22,3 +34,9 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
 `--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
 
+
+
+### Events
+| Name | Description | Params |
+| --- | --- | --- |
+| tryit | Fired when the user pressed the `try it` button. | __none__ |
