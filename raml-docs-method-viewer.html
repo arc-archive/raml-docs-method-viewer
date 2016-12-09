@@ -56,6 +56,7 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-url-color` | Color of the URL field | `--accent-color` |
 `--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
 `--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
+`--action-button` | Mixin applied to the main action button (Try it) | `{}`
 
 @group RAML Elements
 @element raml-docs-method-viewer
@@ -101,6 +102,7 @@ Custom property | Description | Default
     }
 
     .method-value {
+      text-transform: uppercase;
       font-weight: var(--raml-docs-method-viewer-http-method-font-weight, 500);
     }
 
@@ -139,14 +141,23 @@ Custom property | Description | Default
       margin: 0 12px;
     }
 
+    .action-button {
+      background-color: var(--primary-color);
+      color: var(--primary-action-color, #fff);
+      @apply(--action-button);
+    }
+
+    :host([no-tryit]) .action {
+      display: none;
+    }
     </style>
     <div class="title-area">
       <h1 class="title">
-        <span>[[_computeEndpointName(parentEndpoint.*)]]</span>
-        <span>:</span>
-        <span class="method-name">[[_computeMethodName(raml.*)]]</span>
+        <span>[[parentName]]</span>
+        <span hidden$="[[!parentName]]">:</span>
+        <span class="method-name">[[methodName]]</span>
       </h1>
-      <div class="action" hidden$="[[noTryit]]">
+      <div class="action">
         <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
       </div>
     </div>
@@ -168,14 +179,7 @@ Custom property | Description | Default
 
       <div hidden$="[[!hasBody]]">
         <h3>Body</h3>
-        <paper-dropdown-menu label="Body type" hidden$="[[!displayBodySelector]]" class="body-selector">
-          <paper-listbox class="dropdown-content" attr-for-selected="data-type" selected="{{selectedBodyType}}">
-            <template is="dom-repeat" items="[[bodyTypes]]">
-              <paper-item data-type$="[[item]]">[[item]]</paper-item>
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
-        <docs-body-parameters-table type="[[selectedBody]]"></docs-body-parameters-table>
+        <docs-body-parameters-table body="[[raml.body]]"></docs-body-parameters-table>
       </div>
     </section>
 
@@ -183,6 +187,10 @@ Custom property | Description | Default
       <h2>Response</h2>
       <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
     </section>
+
+    <div class="action">
+      <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+    </div>
   </template>
   <script>
   Polymer({
@@ -190,7 +198,7 @@ Custom property | Description | Default
     /**
      * Fired when the user pressed the `try it` button.
      *
-     * @event tryit
+     * @event tryit-requested
      */
     properties: {
       // Parent endpoint object
@@ -198,28 +206,22 @@ Custom property | Description | Default
         type: Object,
         value: false
       },
-      // Computed names of the body types
-      bodyTypes: Array,
       // True if current endpont has a body
       hasBody: {
         value: false,
         type: Boolean,
-        computed: '_computeHasBody(bodyTypes.length)'
+        computed: '_computeHasBody(raml.body)'
       },
-      /**
-       * Compyted value if the body selector can be shown.
-       * Body selector can be shown if there is more than one mody defined.
-       */
-      displayBodySelector: {
-        type: Boolean,
-        computed: '_computeDisplayBodySelector(bodyTypes.length)'
+      // Computed name of the parent resource
+      parentName: {
+        type: String,
+        value: null,
+        computed: '_computeParentName(parentEndpoint.*)'
       },
-      // A name of the selected body type. E.g. "application/json".
-      selectedBodyType: String,
-      // Definition of the body for `selectedBodyType`
-      selectedBody: {
-        type: Object,
-        computed: '_computeSelectedBody(selectedBodyType)'
+      // Computed name of current method
+      methodName: {
+        type: String,
+        computed: '_computeMethodName(raml.*)'
       },
       // Value obtained from the `docs-parameters-table`
       hasUriParameteres: Boolean,
@@ -250,12 +252,17 @@ Custom property | Description | Default
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+      // If set then the `tryit` button will be hidden.
+      noTryit: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
       }
     },
 
     observers: [
-      '_objectChanged(raml.*)',
-      '_bodyTypesChanged(bodyTypes)'
+      '_objectChanged(raml.*)'
     ],
 
     attached: function() {
@@ -301,10 +308,8 @@ Custom property | Description | Default
 
     // Resets the variables to the original state
     clear: function() {
-      this.selectedBodyType = undefined;
       this.hasUriParameteres = undefined;
       this.hasQueryParameteres = undefined;
-      this.bodyTypes = [];
     },
 
     _objectChanged: function() {
@@ -313,7 +318,6 @@ Custom property | Description | Default
       if (!this.raml) {
         return;
       }
-      this.bodyTypes = this._computeBodyTypes();
     },
 
     _computeMethodName: function() {
@@ -328,55 +332,12 @@ Custom property | Description | Default
       return !description;
     },
 
-    _computeEndpointName: function() {
-      var endpoint = this.parentEndpoint;
-      if (!endpoint) {
-        return '';
-      }
-      return endpoint.displayName || endpoint.relativeUri;
-    },
-
-    _computeBodyTypes: function() {
-      var raml = this.raml;
-      if (!raml || !raml.body) {
-        return;
-      }
-      var mime = raml.body.map(function(item) {
-        return item.key;
-      });
-      return mime;
-    },
-
-    _computeDisplayBodySelector: function(size) {
-      return !!(size && size > 1);
-    },
-
-    _computeSelectedBody: function(selectedBodyType) {
-      if (!selectedBodyType) {
-        return undefined;
-      }
-      var body = this.raml.body;
-      for (var i = 0, len = body.length; i < len; i++) {
-        if (body[i].key === selectedBodyType) {
-          return body[i];
-        }
-      }
-    },
-
-    _bodyTypesChanged: function(bodyTypes) {
-      if (!bodyTypes || !bodyTypes.length) {
-        this.selectedBodyType = undefined;
-        return;
-      }
-      this.selectedBodyType = bodyTypes[0];
-    },
-
     _computeHasParameters: function(hasUriParameteres, hasQueryParameteres) {
       return hasUriParameteres || hasQueryParameteres;
     },
 
-    _computeHasBody: function(size) {
-      return !!(size && size > 0);
+    _computeHasBody: function(body) {
+      return !!(body && body.length > 0);
     },
 
     _isMethodHandler: function(e, detail) {
@@ -401,7 +362,15 @@ Custom property | Description | Default
     },
 
     _tryIt: function() {
-      this.fire('tryit');
+      this.fire('tryit-requested');
+    },
+
+    _computeParentName: function() {
+      var endpoint = this.parentEndpoint;
+      if (!endpoint) {
+        return '';
+      }
+      return endpoint.displayName || endpoint.relativeUri;
     }
   });
   </script>
