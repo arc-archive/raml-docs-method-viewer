@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer.svg?branch=master)](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer)  [![Dependency Status](https://dependencyci.com/github/advanced-rest-client/raml-docs-method-viewer/badge)](https://dependencyci.com/github/advanced-rest-client/raml-docs-method-viewer)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer.svg?branch=master)](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer)  
 
 # raml-docs-method-viewer
 
@@ -33,10 +33,11 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-url-color` | Color of the URL field | `--accent-color` |
 `--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
 `--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
+`--action-button` | Mixin applied to the main action button (Try it) | `{}`
 
 
 
 ### Events
 | Name | Description | Params |
 | --- | --- | --- |
-| tryit | Fired when the user pressed the `try it` button. | __none__ |
+| tryit-requested | Fired when the user pressed the `try it` button. | __none__ |
