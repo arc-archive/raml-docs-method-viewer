@@ -150,6 +150,11 @@ Custom property | Description | Default
     :host([no-tryit]) .action {
       display: none;
     }
+
+    .bottom.action {
+      @apply(--layout-horizontal);
+      @apply(--layout-end-justified);
+    }
     </style>
     <div class="title-area">
       <h1 class="title">
@@ -188,7 +193,7 @@ Custom property | Description | Default
       <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
     </section>
 
-    <div class="action">
+    <div class="bottom action">
       <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
     </div>
   </template>
