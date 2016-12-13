@@ -168,6 +168,11 @@ Custom property | Description | Default
       max-width: var(--raml-docs-method-viewer-narrow-container-width, calc(100vw - 32px));
       overflow: auto;
     }
+
+    :host([narrow]) .title-area {
+      @apply(--layout-vertical);
+      margin-bottom: 24px;
+    }
     </style>
     <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
     <section class="container">
