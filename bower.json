@@ -30,7 +30,8 @@
     "paper-item": "PolymerElements/paper-item#^1.2.1",
     "iron-behaviors": "PolymerElements/iron-behaviors#^1.0.17",
     "marked-element": "PolymerElements/marked-element#^1.2.0",
-    "raml-docs-response-panel": "advanced-rest-client/raml-docs-response-panel#^1.0.1"
+    "raml-docs-response-panel": "advanced-rest-client/raml-docs-response-panel#^1.0.1",
+    "iron-media-query": "PolymerElements/iron-media-query#^1.0.8"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#1.0.0",

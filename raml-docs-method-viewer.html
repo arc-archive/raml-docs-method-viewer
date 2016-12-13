@@ -23,7 +23,7 @@ the License.
 <link rel="import" href="../docs-parameters-table/docs-body-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
 <link rel="import" href="../raml-docs-response-panel/raml-docs-response-panel.html">
-
+<link rel="import" href="../iron-media-query/iron-media-query.html">
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -113,6 +113,7 @@ Custom property | Description | Default
 
     .title {
       @apply(--layout-flex);
+      /*@apply(--paper-font-title);*/
     }
 
     .method-desc {
@@ -148,54 +149,74 @@ Custom property | Description | Default
     }
 
     :host([no-tryit]) .action {
-      display: none;
+      display: none !important;
     }
 
     .bottom.action {
       @apply(--layout-horizontal);
       @apply(--layout-end-justified);
     }
+
+    :host([narrow]) .container {
+      max-width: var(--raml-docs-method-viewer-narrow-container-width, calc(100vw - 32px));
+      overflow: auto;
+    }
+    :host([narrow]) docs-parameters-table,
+    :host([narrow]) docs-headers-table,
+    :host([narrow]) docs-body-parameters-table,
+    :host([narrow]) raml-docs-response-panel {
+      max-width: var(--raml-docs-method-viewer-narrow-container-width, calc(100vw - 32px));
+      overflow: auto;
+    }
+
+    :host([narrow]) .title-area {
+      @apply(--layout-vertical);
+      margin-bottom: 24px;
+    }
     </style>
-    <div class="title-area">
-      <h1 class="title">
-        <span>[[parentName]]</span>
-        <span hidden$="[[!parentName]]">:</span>
-        <span class="method-name">[[methodName]]</span>
-      </h1>
-      <div class="action">
+    <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
+    <section class="container">
+      <div class="title-area">
+        <h1 class="title">
+          <span>[[parentName]]</span>
+          <span hidden$="[[!parentName]]">:</span>
+          <span class="method-name">[[methodName]]</span>
+        </h1>
+        <div class="action">
+          <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+        </div>
+      </div>
+      <div hidden$="[[_computeHideMethodDesc(raml.description)]]" class="method-desc">[[raml.description]]</div>
+
+      <section class="request-doc">
+        <h2>Request</h2>
+
+        <div class="url-area">
+          <div class="method-value">[[raml.method]]</div>
+          <div class="url-value">[[raml.absoluteUrl]]</div>
+        </div>
+
+        <h3 hidden$="[[!hasParameters]]">Parameters</h3>
+        <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.allUriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+
+        <h3 hidden$="[[!hasHeaders]]">Headers</h3>
+        <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
+
+        <div hidden$="[[!hasBody]]">
+          <h3>Body</h3>
+          <docs-body-parameters-table body="[[raml.body]]"></docs-body-parameters-table>
+        </div>
+      </section>
+
+      <section class="response-doc" hidden$="[[!hasResponses]]">
+        <h2>Response</h2>
+        <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]" narrow="[[narrow]]"></raml-docs-response-panel>
+      </section>
+
+      <div class="bottom action">
         <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
       </div>
-    </div>
-    <div hidden$="[[_computeHideMethodDesc(raml.description)]]" class="method-desc">[[raml.description]]</div>
-
-    <section class="request-doc">
-      <h2>Request</h2>
-
-      <div class="url-area">
-        <div class="method-value">[[raml.method]]</div>
-        <div class="url-value">[[raml.absoluteUrl]]</div>
-      </div>
-
-      <h3 hidden$="[[!hasParameters]]">Parameters</h3>
-      <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.allUriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
-
-      <h3 hidden$="[[!hasHeaders]]">Headers</h3>
-      <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
-
-      <div hidden$="[[!hasBody]]">
-        <h3>Body</h3>
-        <docs-body-parameters-table body="[[raml.body]]"></docs-body-parameters-table>
-      </div>
     </section>
-
-    <section class="response-doc" hidden$="[[!hasResponses]]">
-      <h2>Response</h2>
-      <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
-    </section>
-
-    <div class="bottom action">
-      <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
-    </div>
   </template>
   <script>
   Polymer({
@@ -263,6 +284,19 @@ Custom property | Description | Default
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+      /**
+       * If set it will renders the view in the narrow layout.
+       */
+      narrow: {
+        type: Boolean,
+        notify: true,
+        reflectToAttribute: true
+      },
+      // A widith below which the `narrow` property will be set to true.
+      narrowWidth: {
+        type: String,
+        value: '768px'
       }
     },
 
