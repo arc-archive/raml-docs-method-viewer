@@ -18,11 +18,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../iron-test-helpers/test-helpers.js"></script>
     <script src="../../iron-test-helpers/mock-interactions.js"></script>
 
-    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../raml-js-parser/raml-js-parser.html">
     <link rel="import" href="../raml-docs-method-viewer.html">
   </head>
   <body>
 
+    <test-fixture id="parser">
+      <template>
+        <raml-js-parser normalize-raml></raml-js-parser>
+      </template>
+    </test-fixture>
     <test-fixture id="basic">
       <template>
         <raml-docs-method-viewer></raml-docs-method-viewer>
@@ -32,10 +37,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
     /* global suite, test, fixture, assert */
     suite('basic', function() {
-      test('`raml-docs-method-viewer` should be initialized', function() {
-        var element = fixture('basic');
-        assert.equal(element.isAttached, true, 'element.isAttached equals true');
+      var element;
+      setup(function(done) {
+        var baseUrl = location.href.substr(0, location.href.lastIndexOf('/') + 1);
+        element = fixture('basic');
+        var parser = fixture('parser');
+        parser.loadApi(baseUrl + 'test.raml')
+        .then(function() {
+          element.parentEndpoint = parser.get('latestJson.specification.resources.0');
+          element.raml = parser.get('latestJson.specification.resources.0.methods.0');
+          done();
+        })
+        .catch(function(e) {
+          done(e);
+        });
       });
+
+      test('hasBody should be false', function() {
+        assert.equal(element.hasBody, false);
+      });
+
+      test('Should compute parent endpoint name', function() {
+        assert.equal(element.parentName, '/{orgId}');
+      });
+
+      test('Should compute method name', function() {
+        assert.equal(element.methodName, 'get');
+      });
+
+      test('Hiddenshould be false', function() {
+        assert.equal(element.hidden, false);
+      });
+
     });
     </script>
 
