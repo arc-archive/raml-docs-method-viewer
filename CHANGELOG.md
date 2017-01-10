@@ -1,3 +1,14 @@
+<a name="0.1.7"></a>
+## [0.1.7](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.6...v0.1.7) (2017-01-10)
+
+
+### Update
+
+* Added test cases ([02221985c9966248d5c9162bc70cea39667fc044](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/02221985c9966248d5c9162bc70cea39667fc044))
+* updated component to work with new parser output ([fa24b1fecf950dbaab493d966bfddd2d8ad35926](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/fa24b1fecf950dbaab493d966bfddd2d8ad35926))
+
+
+
 <a name="0.1.6"></a>
 ## [0.1.6](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.5...v0.1.6) (2016-12-13)
 
