@@ -31,7 +31,6 @@
     "marked-element": "PolymerElements/marked-element#^1.2.0",
     "raml-docs-response-panel": "advanced-rest-client/raml-docs-response-panel#^1.0.1",
     "iron-media-query": "PolymerElements/iron-media-query#^1.0.8",
-    "marked-element": "PolymerElements/marked-element#^1.2.0",
     "markdown-styles": "advanced-rest-client/markdown-styles#^1.0.0"
   },
   "devDependencies": {
@@ -56,5 +55,5 @@
     "test",
     "tasks"
   ],
-  "version": "0.1.7"
+  "version": "0.1.8"
 }
