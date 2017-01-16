@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer.svg?branch=master)](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/raml-docs-method-viewer)  
 
 # raml-docs-method-viewer
 
@@ -34,6 +34,9 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
 `--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
 `--action-button` | Mixin applied to the main action button (Try it) | `{}`
+`--arc-font-headline` | Mixin applied to the h1 element (API title) | `{}`
+`--arc-font-title` | Mixin applied to the h2 elements (section title) | `{}`
+`--arc-font-subhead` | Mixin applied to the h3 elements (section sub-titles) | `{}`
 
 
 
