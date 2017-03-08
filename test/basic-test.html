@@ -35,23 +35,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert */
+    /* global suite, test, fixture, assert, MockInteractions, TestHelpers */
     suite('basic', function() {
       var element;
-      setup(function(done) {
+      var raml;
+      var parentRaml;
+
+      suiteSetup(function(done) {
         var baseUrl = location.href.substr(0, location.href.lastIndexOf('/') + 1);
-        element = fixture('basic');
         var parser = fixture('parser');
         parser.loadApi(baseUrl + 'test.raml')
         .then(function() {
-          element.parentEndpoint = parser.get('latestJson.specification.resources.0');
-          element.raml = parser.get('latestJson.specification.resources.0.methods.0');
+          raml = parser.get('latestJson.specification.resources.0.methods.0');
+          parentRaml = parser.get('latestJson.specification.resources.0');
           done();
         })
         .catch(function(e) {
           done(e);
         });
       });
+
+      setup(function() {
+        element = fixture('basic');
+        element.parentEndpoint = parentRaml;
+        element.raml = raml;
+      });
+
+      function isVisible(elm) {
+        return !!(elm.offsetWidth || elm.offsetHeight || elm.getClientRects().length);
+      }
 
       test('hasBody should be false', function() {
         assert.equal(element.hasBody, false);
@@ -65,10 +77,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(element.methodName, 'get');
       });
 
-      test('Hiddenshould be false', function() {
+      test('Hidden should be false', function() {
         assert.equal(element.hidden, false);
       });
 
+      test('hasParameters should be true', function() {
+        assert.equal(element.hasParameters, true);
+      });
+
+      test('hasResponses should be true', function() {
+        assert.equal(element.hasResponses, true);
+      });
+
+      test('noTryit hiddes action button', function() {
+        element.noTryit = true;
+        TestHelpers.forceXIfStamp(element);
+
+        var buttons = Polymer.dom(element.root).querySelectorAll('.action-button');
+        var visible = isVisible(buttons[0]);
+        assert.isFalse(visible, 'First action button is invisible');
+        visible = isVisible(buttons[1]);
+        assert.isFalse(visible, 'Second action button is invisible');
+      });
+
+      test('documentation sections are opened by default', function() {
+        assert.equal(element.parametersOpened, true, 'Parameters section is opened');
+        assert.equal(element.headersOpened, true, 'Headers section is opened');
+        assert.equal(element.bodyOpened, true, 'Body section is opened');
+      });
+
+      test('Parameters toggle event is handled correctly', function() {
+        var button = Polymer.dom(element.root).querySelector('[data-section="parameters"]');
+        assert.isDefined(button, 'Parameters toggle button is defined');
+        MockInteractions.tap(button, {emulateTouch: true});
+        assert.equal(element.parametersOpened, false, 'Parameters section is closed');
+      });
+
+      test('Headers toggle event is handled correctly', function() {
+        var button = Polymer.dom(element.root).querySelector('[data-section="headers"]');
+        assert.isDefined(button, 'Headers toggle button is defined');
+        MockInteractions.tap(button, {emulateTouch: true});
+        assert.equal(element.headersOpened, false, 'Headers section is closed');
+      });
+
+      test('Body toggle event is handled correctly', function() {
+        var button = Polymer.dom(element.root).querySelector('[data-section="body"]');
+        assert.isDefined(button, 'Body toggle button is defined');
+        MockInteractions.tap(button, {emulateTouch: true});
+        assert.equal(element.bodyOpened, false, 'Body section is closed');
+      });
     });
     </script>
 

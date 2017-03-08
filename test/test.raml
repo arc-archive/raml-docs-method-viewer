@@ -34,7 +34,12 @@ types:
       phone: Phone # inherits all properties from type `Phone`; uses shortcut syntax
   Alertable: Manager | AlertableAdmin # union type; either a `Manager` or `AlertableAdmin`
 /{orgId}:
+  uriParameters:
+    orgId:
+      type: string
   get:
+    queryParameters:
+      test: string
     responses:
       200:
         body:

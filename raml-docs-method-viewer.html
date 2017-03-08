@@ -23,6 +23,11 @@ the License.
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../marked-element/marked-element.html">
 <link rel="import" href="../markdown-styles/markdown-styles.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../arc-icons/arc-icons.html">
+
 <!--
 `<raml-docs-method-viewer>` Documentation view for the method defined in RAML file
 
@@ -184,6 +189,33 @@ Custom property | Description | Default
     :host([narrow]) h3 {
       font-size: 17px;
     }
+
+    .section-title-area {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    .section-title-area h3 {
+      @apply(--layout-flex);
+    }
+
+    .toggle-button {
+      color: var(--arc-toggle-view-icon-color, rgba(0, 0, 0, 0.54));
+      transition: color 0.25s linear;
+    }
+
+    .toggle-icon {
+      transform: rotateZ(0deg);
+      transition: transform 0.3s linear;
+    }
+
+    .toggle-icon.opened {
+      transform: rotateZ(-180deg);
+    }
+
+    .toggle-button:hover {
+      color: var(--arc-toggle-view-icon-hover-color, rgba(0, 0, 0, 0.78));
+    }
     </style>
     <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
     <section class="container">
@@ -212,16 +244,54 @@ Custom property | Description | Default
           <div class="url-value">[[raml.absoluteUri]]</div>
         </div>
 
-        <h3 hidden$="[[!hasParameters]]">Parameters</h3>
-        <docs-parameters-table hidden$="[[!hasParameters]]" uri-parameters="[[raml.allUriParameters]]" query-parameters="[[raml.queryParameters]]" has-query-parameteres="{{hasQueryParameteres}}" has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+        <section hidden$="[[!hasParameters]]">
+          <div class="section-title-area">
+            <h3>Parameters</h3>
+            <div class="title-area-actions">
+              <paper-button data-section="parameters" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle parameters details">
+                [[_computeToggleActionLabel(parametersOpened)]]
+                <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(parametersOpened)]]"></iron-icon>
+              </paper-button>
+            </div>
+          </div>
+          <iron-collapse opened="[[parametersOpened]]">
+            <docs-parameters-table
+              uri-parameters="[[raml.allUriParameters]]"
+              query-parameters="[[raml.queryParameters]]"
+              has-query-parameteres="{{hasQueryParameteres}}"
+              has-uri-parameteres="{{hasUriParameteres}}" auto-hide></docs-parameters-table>
+          </iron-collapse>
+        </section>
 
-        <h3 hidden$="[[!hasHeaders]]">Headers</h3>
-        <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
+        <section hidden$="[[!hasHeaders]]">
+          <div class="section-title-area">
+            <h3>Headers</h3>
+            <div class="title-area-actions">
+              <paper-button data-section="headers" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle headers details">
+                [[_computeToggleActionLabel(headersOpened)]]
+                <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(headersOpened)]]"></iron-icon>
+              </paper-button>
+            </div>
+          </div>
+          <iron-collapse opened="[[headersOpened]]">
+            <docs-headers-table has-headers="{{hasHeaders}}" headers="[[raml.headers]]" auto-hide></docs-headers-table>
+          </iron-collapse>
+        </section>
 
-        <div hidden$="[[!hasBody]]">
-          <h3>Body</h3>
-          <docs-body-parameters-table body="[[raml.body]]"></docs-body-parameters-table>
-        </div>
+        <section hidden$="[[!hasBody]]">
+          <div class="section-title-area">
+            <h3>Body</h3>
+            <div class="title-area-actions">
+              <paper-button data-section="body" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle body details">
+                [[_computeToggleActionLabel(bodyOpened)]]
+                <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(bodyOpened)]]"></iron-icon>
+              </paper-button>
+            </div>
+          </div>
+          <iron-collapse opened="[[bodyOpened]]">
+            <docs-body-parameters-table body="[[raml.body]]"></docs-body-parameters-table>
+          </iron-collapse>
+        </section>
       </section>
 
       <section class="response-doc" hidden$="[[!hasResponses]]">
@@ -313,6 +383,21 @@ Custom property | Description | Default
       narrowWidth: {
         type: String,
         value: '768px'
+      },
+      // If true then the parameters docs table is displayed.
+      parametersOpened: {
+        type: Boolean,
+        value: true
+      },
+      // If true then the headers docs table is displayed.
+      headersOpened: {
+        type: Boolean,
+        value: true
+      },
+      // If true then the body docs table is displayed.
+      bodyOpened: {
+        type: Boolean,
+        value: true
       }
     },
 
@@ -426,6 +511,46 @@ Custom property | Description | Default
         return '';
       }
       return endpoint.displayName || endpoint.relativeUri;
+    },
+
+    /**
+     * Toogles collapsable sections.
+     * The toggle button must have `data-section` property with the name of the
+     * section to toggle. Variable that controls the state (Boolean value)
+     * must be called section + 'Opened'.
+     */
+    toggleCollapseSection: function(e) {
+      var path = e.path;
+      var target;
+      var section;
+      while (true) {
+        target = path.shift();
+        if (!target) {
+          break;
+        }
+        if (!target.dataset || !target.dataset.section) {
+          continue;
+        }
+        section = target.dataset.section;
+      }
+      if (!section) {
+        return console.warn('Toggle section not fond in path ', e.path);
+      }
+      var variable = section + 'Opened';
+      this[variable] = !this[variable];
+    },
+
+    // Computes class for the toggle's button icon.
+    _computeToggleIconClass: function(opened) {
+      var clazz = 'toggle-icon';
+      if (opened) {
+        clazz += ' opened';
+      }
+      return clazz;
+    },
+    // Computes a label for the section toggle buttons.
+    _computeToggleActionLabel: function(opened) {
+      return opened ? 'Hide' : 'Show';
     }
   });
   </script>

@@ -31,7 +31,10 @@
     "marked-element": "PolymerElements/marked-element#^1.2.0",
     "raml-docs-response-panel": "advanced-rest-client/raml-docs-response-panel#^1.0.1",
     "iron-media-query": "PolymerElements/iron-media-query#^1.0.8",
-    "markdown-styles": "advanced-rest-client/markdown-styles#^1.0.0"
+    "markdown-styles": "advanced-rest-client/markdown-styles#^1.0.0",
+    "iron-collapse": "PolymerElements/iron-collapse#^1.3.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.12",
+    "arc-icons": "advanced-rest-client/arc-icons#^1.0.14"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#1.0.0",
