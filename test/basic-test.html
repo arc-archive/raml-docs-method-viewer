@@ -51,7 +51,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           done();
         })
         .catch(function(e) {
-          done(e);
+          done(new Error('Parser error: ' + (e.message || 'Some error happended...')));
         });
       });
 
@@ -109,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('Parameters toggle event is handled correctly', function() {
         var button = Polymer.dom(element.root).querySelector('[data-section="parameters"]');
         assert.isDefined(button, 'Parameters toggle button is defined');
-        MockInteractions.tap(button, {emulateTouch: true});
+        MockInteractions.tap(button);
         assert.equal(element.parametersOpened, false, 'Parameters section is closed');
       });
 

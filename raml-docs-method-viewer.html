@@ -520,19 +520,7 @@ Custom property | Description | Default
      * must be called section + 'Opened'.
      */
     toggleCollapseSection: function(e) {
-      var path = e.path;
-      var target;
-      var section;
-      while (true) {
-        target = path.shift();
-        if (!target) {
-          break;
-        }
-        if (!target.dataset || !target.dataset.section) {
-          continue;
-        }
-        section = target.dataset.section;
-      }
+      var section = Polymer.dom(e).localTarget.dataset.section;
       if (!section) {
         return console.warn('Toggle section not fond in path ', e.path);
       }
