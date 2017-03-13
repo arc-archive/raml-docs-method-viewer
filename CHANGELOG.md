@@ -1,3 +1,20 @@
+<a name="0.1.9"></a>
+## [0.1.9](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.7...v0.1.9) (2017-03-13)
+
+
+### Fix
+
+* Added polyfills to test ([b727949eef17188b097e600732a1c7639bdeb22e](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/b727949eef17188b097e600732a1c7639bdeb22e))
+
+### Update
+
+* added parameters secttion hide button. Updated test cases ([2c765853122c9d18104ec1744e1a098a74769889](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/2c765853122c9d18104ec1744e1a098a74769889))
+* Added Sauce config for Travis ([482aec62aa1540b64951880ac6506dc9c7d77e7b](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/482aec62aa1540b64951880ac6506dc9c7d77e7b))
+* collapse section function now uses Polymer API to find an event's target element ([4ca7cee52aecdb46f836614c1fa81066cf76cd37](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/4ca7cee52aecdb46f836614c1fa81066cf76cd37))
+* Updated styles for the element ([59c5b0e5305294c1c01d02f5f24280006e220524](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/59c5b0e5305294c1c01d02f5f24280006e220524))
+
+
+
 <a name="0.1.8"></a>
 ## [0.1.8](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.7...v0.1.8) (2017-01-16)
 

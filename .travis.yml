@@ -6,10 +6,11 @@ before_script:
 - npm install --silent bower polymer-cli
 - ./node_modules/.bin/bower install --silent
 addons:
-  sauce_connect: false
+  sauce_connect: true
 script:
 - ./node_modules/.bin/polymer lint raml-docs-method-viewer.html
-# - node_modules/.bin/polymer test --plugin sauce --job-name "docs-parameters-table:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER}
+- ./node_modules/.bin/polymer test --plugin sauce --job-name "docs-parameters-table:${TRAVIS_BRANCH}"
+  --build-number=${TRAVIS_BUILD_NUMBER}
 cache:
   directories:
   - bower_components
@@ -20,3 +21,7 @@ branches:
   - develop
 after_success:
 - node tasks/ci.js
+env:
+  global:
+  - secure: knjuQ5A3ujpUs3t+iN927IiRawIYiRurgPjXbGxVLWDK6tmV/O2EZjFfRmG2RudlhTkPpsZymWaqLtqD8T9gM/kYAZqITPWahJyWm2CJty4k94l796gOC9IEn0KN9m7iCNYDeAMF3OhuCYnxtNHgezo01Dcs0NGTSW3WQ5aJuxejtw46ff/o1lY3rX9o9yq92s6UNl4HwlYzs8IWVLrnvWiTbBAtAsHNWoyd17E08TYhtVski6G8eum/WxXcPNEVanb0tdMJru5wI17nZzorwYmSXnPCB4llAiQairUSYDBykUZDj8mQkJKzsp2JRyhNUxfA6NHHp/vUhQqwRKzOeZSs7yHWQrps2+Ut2VJbz0cdlrQZYdMJfDD6tGglZL9hLDvMpq3Z5Dt/TS7DxrpgyoSJL/dItVyzUl0Bg7UDSp7rxQM/aedgazFCv/fZzEttTSUeFoVh1Ts170VIZhpab86fjhqNSAUu3rHT9grQHj3IcWad3dBFdMhlUnJvn5FiWZ6T28KIWZU4hatkGhNusudC2QXeysIkxDYGocPqtV++UidVGHubc3lfBfrPLIG8eSKdAiruxB1fXIbh7gsA2t4wFvv8cGdoS/FhXUR+yfKMVlA3BMpuhrQcgmdk3aMeN8A2Aho2Ih6/2cvZKRyoPJTW7TEFWLl/wqymt+cZkr8=
+  - secure: WHJQDF9zT7Eq+BcI5ZgE4SZ1vjvbQ2JD3IV7ZjvUOvI4gYo+IM/NOOI89+1oZucbEfaL+tvxsCmRnteXkH9otgH8bwFd5iGp/pq5r2icN7U0TrpHLcsccHu/bDE1HDVC8RB4Af52Ev3VnhEfBVFcDJlIs1AjylO6/jc51u5iXLPHt8Vbe2l01cpOivpZz46Il6K9S0EF6U/vO9TuYqDBxOF5Js36A9FUCCLNoc+/T7g9U/l3aUkSSJVCrn4WBWuKY3iVa5e653sniIS0GkDphINgxn4l/yPlPSQDusbKC6soNrEzV/4D6Qegkw2iaoGWY1KFuxbQGdN+FZVKl4WSpeq3VV8rnA4BG6wHAckkbkXrMX3xlO2Nd21z1AL02OLhKBfMcvqZnwgLR+CxWYYd1VPfzxwQUdm8pv68HUrXHd972CcNCS1edi7Zyeq95hUWUtqjRI7iGbNMQEvdi2O2MSPizNu7/ilNEd87O5I0MtAVpGbNH1n+7kLu+BlKf6qSqzC72QTTiP/RIG02zw5dErSc8tDXlZTa5aWcma7wd2zxy1cXocEyRSahS995Pr/vzQoSlxxnSf1uaiDXpR3ps8xGnbdCGJSH0CcTuMDkaW8SZyFvMbBted4bIYVYRZI9blj/cPLHX6QO57AFazSRdf9HcZetUl7CUw2fpsG/SHc=
