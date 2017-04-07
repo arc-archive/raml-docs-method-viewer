@@ -1,6 +1,6 @@
 {
   "name": "raml-docs-method-viewer",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "Documentation view for the method defined in RAML file",
   "devDependencies": {
