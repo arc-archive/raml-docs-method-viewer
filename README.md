@@ -18,6 +18,11 @@ To properly compute values displayed in the view it needs to know its
 `parentEndpoint`. Though, it will work properly if the parent is not passed.
 Parent is used to display title of the method.
 
+## Disabling the "try it" button
+You can either set the `noTryit` property to true (or set the `no-tryit` attribute on the element)
+or send for the `tryit-toggle` custom event with the `state` property set to the detail object.
+The element will listen on `window` object for the event.
+
 ### Styling
 `<raml-docs-method-viewer>` provides the following custom properties and mixins for styling:
 
