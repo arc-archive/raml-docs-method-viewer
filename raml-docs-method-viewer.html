@@ -258,8 +258,7 @@ Custom property | Description | Default
             <docs-parameters-table
               uri-parameters="[[raml.allUriParameters]]"
               query-parameters="[[raml.queryParameters]]"
-              has-query-parameteres="{{hasQueryParameteres}}"
-              has-uri-parameteres="{{hasUriParameteres}}"
+              has-parameters="{{hasParameters}}"
               narrow=[[narrow]] auto-hide></docs-parameters-table>
           </iron-collapse>
         </section>
@@ -339,16 +338,8 @@ Custom property | Description | Default
         type: String,
         computed: '_computeMethodName(raml.*)'
       },
-      // Value obtained from the `docs-parameters-table`
-      hasUriParameteres: Boolean,
-      // Value obtained from the `docs-parameters-table`
-      hasQueryParameteres: Boolean,
-      // Computed flag if there are any parameters to display
-      hasParameters: {
-        value: false,
-        type: Boolean,
-        computed: '_computeHasParameters(hasUriParameteres,hasQueryParameteres)'
-      },
+      // If true then the query / uri parameters will be displayed.
+      hasParameters: Boolean,
       // Value obtained from the `raml-docs-response-panel`
       hasResponses: Boolean,
       /**
@@ -450,14 +441,7 @@ Custom property | Description | Default
         '_selectedParentChangeHandler');
     },
 
-    // Resets the variables to the original state
-    clear: function() {
-      this.hasUriParameteres = undefined;
-      this.hasQueryParameteres = undefined;
-    },
-
     _objectChanged: function() {
-      this.clear();
       // this.hidden = false;
       if (!this.raml) {
         return;
@@ -474,10 +458,6 @@ Custom property | Description | Default
 
     _computeHideMethodDesc: function(description) {
       return !description;
-    },
-
-    _computeHasParameters: function(hasUriParameteres, hasQueryParameteres) {
-      return hasUriParameteres || hasQueryParameteres;
     },
 
     _computeHasBody: function(body) {
