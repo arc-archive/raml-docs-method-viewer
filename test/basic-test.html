@@ -45,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert, MockInteractions, TestHelpers */
+    /* global fixture, assert, MockInteractions, TestHelpers */
     suite('basic', function() {
       var element;
       var raml;
@@ -139,6 +139,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isDefined(button, 'Body toggle button is defined');
         MockInteractions.tap(button, {emulateTouch: true});
         assert.equal(element.bodyOpened, false, 'Body section is closed');
+      });
+
+      test('Firing tryit-toggle event toggles noTryit propery', function() {
+        var event = new CustomEvent('tryit-toggle', {
+          detail: {
+            state: false
+          },
+          bubbles: true
+        });
+        document.body.dispatchEvent(event);
+        assert.isTrue(element.noTryit);
       });
     });
     </script>
