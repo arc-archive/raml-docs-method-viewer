@@ -1,3 +1,19 @@
+<a name="0.1.12"></a>
+## [0.1.12](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.11...v0.1.12) (2017-04-12)
+
+
+### Fix
+
+* Fixes #1 - hasParameters is undefined ([2ce55a87c27b829776275489fd7d3d157a883df2](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/2ce55a87c27b829776275489fd7d3d157a883df2)), closes [#1](https://github.com/advanced-rest-client/raml-docs-method-viewer/issues/1)
+* Fixes #2 It should handle event to toggle the  property ([7d73e1886e757fbf6e41c4c448cab0098bd3a697](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/7d73e1886e757fbf6e41c4c448cab0098bd3a697)), closes [#2](https://github.com/advanced-rest-client/raml-docs-method-viewer/issues/2)
+
+### Update
+
+* Removed default values from the element ([a7f19c129d8acf39cdb1a83bab1e34137d1475d1](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/a7f19c129d8acf39cdb1a83bab1e34137d1475d1))
+* Updated the test cases for new parser ([600c536951b4cc928fb93934da6694062a5efd65](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/600c536951b4cc928fb93934da6694062a5efd65))
+
+
+
 <a name="0.1.11"></a>
 ## [0.1.11](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.9...v0.1.11) (2017-04-07)
 

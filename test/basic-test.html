@@ -19,6 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../iron-test-helpers/mock-interactions.js"></script>
 
     <link rel="import" href="../../raml-js-parser/raml-js-parser.html">
+    <link rel="import" href="../../raml-json-enhance/raml-json-enhance.html">
     <link rel="import" href="../raml-docs-method-viewer.html">
     <link rel="import" href="../../fetch-polyfill/fetch-polyfill.html">
     <link rel="import" href="../../promise-polyfill/promise-polyfill.html">
@@ -27,9 +28,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <test-fixture id="parser">
       <template>
-        <raml-js-parser normalize-raml></raml-js-parser>
+        <raml-js-parser json></raml-js-parser>
       </template>
     </test-fixture>
+
+    <test-fixture id="enhancer">
+      <template>
+        <raml-json-enhance></raml-json-enhance>
+      </template>
+    </test-fixture>
+
     <test-fixture id="basic">
       <template>
         <raml-docs-method-viewer></raml-docs-method-viewer>
@@ -37,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert, MockInteractions, TestHelpers */
+    /* global fixture, assert, MockInteractions, TestHelpers */
     suite('basic', function() {
       var element;
       var raml;
@@ -46,11 +54,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       suiteSetup(function(done) {
         var baseUrl = location.href.substr(0, location.href.lastIndexOf('/') + 1);
         var parser = fixture('parser');
-        parser.loadApi(baseUrl + 'test.raml')
-        .then(function() {
-          raml = parser.get('latestJson.specification.resources.0.methods.0');
-          parentRaml = parser.get('latestJson.specification.resources.0');
+        var enhancer = fixture('enhancer');
+        enhancer.addEventListener('raml-json-enhance-ready', function(e) {
+          raml = e.detail.json.resources[0].methods[0];
+          parentRaml = e.detail.json.resources[0];
           done();
+        });
+        parser.loadApi(baseUrl + 'test.raml')
+        .then(function(data) {
+          enhancer.json = data.json.specification;
         })
         .catch(function(e) {
           done(new Error('Parser error: ' + (e.message || 'Some error happended...')));
@@ -79,8 +91,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(element.methodName, 'get');
       });
 
-      test('Hidden should be false', function() {
-        assert.equal(element.hidden, false);
+      test('Hidden should be undefined', function() {
+        assert.isUndefined(element.hidden);
       });
 
       test('hasParameters should be true', function() {
@@ -127,6 +139,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.isDefined(button, 'Body toggle button is defined');
         MockInteractions.tap(button, {emulateTouch: true});
         assert.equal(element.bodyOpened, false, 'Body section is closed');
+      });
+
+      test('Firing tryit-toggle event toggles noTryit propery', function() {
+        var event = new CustomEvent('tryit-toggle', {
+          detail: {
+            state: false
+          },
+          bubbles: true
+        });
+        document.body.dispatchEvent(event);
+        assert.isTrue(element.noTryit);
       });
     });
     </script>
