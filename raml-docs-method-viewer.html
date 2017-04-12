@@ -351,19 +351,16 @@ Custom property | Description | Default
        */
       autoHide: {
         type: Boolean,
-        value: false,
         observer: '_autoHideChanged'
       },
       // If true then the element will be hidden ui the UI.
       hidden: {
         type: Boolean,
-        value: false,
         reflectToAttribute: true
       },
       // If set then the `tryit` button will be hidden.
       noTryit: {
         type: Boolean,
-        value: false,
         reflectToAttribute: true
       },
       /**
@@ -408,6 +405,9 @@ Custom property | Description | Default
     },
 
     _autoHideChanged: function(state) {
+      if (state === undefined) {
+        return;
+      }
       if (state) {
         this._attacheListeners();
       } else {
