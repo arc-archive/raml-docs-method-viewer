@@ -25,7 +25,6 @@ the License.
 <link rel="import" href="../markdown-styles/markdown-styles.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 
 <!--
@@ -157,6 +156,10 @@ Custom property | Description | Default
       @apply(--action-button);
     }
 
+    .action-button:hover {
+      @apply(--action-button-hover);
+    }
+
     :host([no-tryit]) .action {
       display: none !important;
     }
@@ -207,6 +210,7 @@ Custom property | Description | Default
     .toggle-button {
       color: var(--arc-toggle-view-icon-color, rgba(0, 0, 0, 0.54));
       transition: color 0.25s linear;
+      @apply(--toggle-button);
     }
 
     .toggle-icon {
@@ -220,7 +224,9 @@ Custom property | Description | Default
 
     .toggle-button:hover {
       color: var(--arc-toggle-view-icon-hover-color, rgba(0, 0, 0, 0.78));
+      @apply(--toggle-button-hover);
     }
+
     </style>
     <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
     <section class="container">
