@@ -216,6 +216,11 @@ Custom property | Description | Default
       @apply(--toggle-button);
     }
 
+    .toggle-button:hover {
+      color: var(--arc-toggle-view-icon-hover-color, rgba(0, 0, 0, 0.78));
+      @apply(--toggle-button-hover);
+    }
+
     .toggle-icon {
       transform: rotateZ(0deg);
       transition: transform 0.3s linear;
@@ -223,11 +228,6 @@ Custom property | Description | Default
 
     .toggle-icon.opened {
       transform: rotateZ(-180deg);
-    }
-
-    .toggle-button:hover {
-      color: var(--arc-toggle-view-icon-hover-color, rgba(0, 0, 0, 0.78));
-      @apply(--toggle-button-hover);
     }
 
     </style>
