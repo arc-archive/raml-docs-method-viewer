@@ -103,8 +103,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(element.hasResponses, true);
       });
 
-      test('noTryit hiddes action button', function() {
-        element.noTryit = true;
+      test('noTryIt hiddes action button', function() {
+        element.noTryIt = true;
         TestHelpers.forceXIfStamp(element);
 
         var buttons = Polymer.dom(element.root).querySelectorAll('.action-button');
