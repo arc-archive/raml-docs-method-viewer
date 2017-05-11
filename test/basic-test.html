@@ -141,7 +141,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(element.bodyOpened, false, 'Body section is closed');
       });
 
-      test('Firing tryit-toggle event toggles noTryit propery', function() {
+      test('Firing tryit-toggle event toggles noTryIt propery', function() {
         var event = new CustomEvent('tryit-toggle', {
           detail: {
             state: false
@@ -149,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bubbles: true
         });
         document.body.dispatchEvent(event);
-        assert.isTrue(element.noTryit);
+        assert.isTrue(element.noTryIt);
       });
     });
     </script>

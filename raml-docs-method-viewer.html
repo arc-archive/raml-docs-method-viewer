@@ -45,7 +45,7 @@ To properly compute values displayed in the view it needs to know its
 Parent is used to display title of the method.
 
 ## Disabling the "try it" button
-You can either set the `noTryit` property to true (or set the `no-tryit` attribute on the element)
+You can either set the `noTryIt` property to true (or set the `no-tryit` attribute on the element)
 or send for the `tryit-toggle` custom event with the `state` property set to the detail object.
 The element will listen on `window` object for the event.
 
@@ -378,7 +378,7 @@ Custom property | Description | Default
         reflectToAttribute: true
       },
       // If set then the `tryit` button will be hidden.
-      noTryit: {
+      noTryIt: {
         type: Boolean,
         reflectToAttribute: true
       },
@@ -550,7 +550,7 @@ Custom property | Description | Default
     },
 
     _toggleTryitHandler: function(e) {
-      this.noTryit = !e.detail.state;
+      this.noTryIt = !e.detail.state;
     }
   });
   </script>
