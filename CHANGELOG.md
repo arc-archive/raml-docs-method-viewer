@@ -1,3 +1,18 @@
+<a name="0.1.13"></a>
+## [0.1.13](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.12...v0.1.13) (2017-05-11)
+
+
+### Fix
+
+* Fixed hidding the try it button after property name change ([280bdbbd47102a6c9031ae4552f19ce021481fbd](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/280bdbbd47102a6c9031ae4552f19ce021481fbd))
+* Fixed test cases after property name change ([a64937ca91dc5e96a5972a818e9cb86e8d6c3091](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/a64937ca91dc5e96a5972a818e9cb86e8d6c3091))
+
+### Update
+
+* Renamed noTryit property to noTryIt ([b276d17510c2fa23273b6999bdca5730522acf6e](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/b276d17510c2fa23273b6999bdca5730522acf6e))
+
+
+
 <a name="0.1.12"></a>
 ## [0.1.12](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.11...v0.1.12) (2017-04-12)
 
