@@ -329,6 +329,8 @@ Custom property | Description | Default
   <script>
   Polymer({
     is: 'raml-docs-method-viewer',
+
+    behaviors: [Polymer.RamlBehavior],
     /**
      * Fired when the user pressed the `try it` button.
      *
