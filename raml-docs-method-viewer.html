@@ -296,7 +296,7 @@ Custom property | Description | Default
             <docs-headers-table
               has-headers="{{hasHeaders}}"
               headers="[[raml.headers]]"
-              narrow=[[narrow]] auto-hide></docs-headers-table>
+              auto-hide></docs-headers-table>
           </iron-collapse>
         </section>
 
@@ -318,7 +318,7 @@ Custom property | Description | Default
 
       <section class="response-doc" hidden$="[[!hasResponses]]">
         <h2>Response</h2>
-        <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]" narrow="[[narrow]]"></raml-docs-response-panel>
+        <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
       </section>
 
       <div class="bottom action">
