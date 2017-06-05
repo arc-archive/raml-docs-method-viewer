@@ -5,39 +5,59 @@ types:
   Org:
     type: object
     properties:
-      onCall: Alertable # inherits all properties from type `Alertable`
-      Head: Manager # inherits all properties from type `Manager`
+      onCall: Alertable
+      Head: Manager
   Person:
     type: object
-    discriminator: kind # reference to the `kind` property of `Person`
     properties:
       firstname: string
       lastname: string
       title?: string
-      kind: string # may be used to differenciate between classes that extend from `Person`
+      kind: string
   Phone:
     type: string
     pattern: "^[0-9|-]+$" # defines pattern for the content of type `Phone`
   Manager:
-    type: Person # inherits all properties from type `Person`
+    type: Person
     properties:
-      reports: Person[] # inherits all properties from type `Person`; array type where `[]` is a shortcut
+      reports: Person[]
       phone:  Phone
   Admin:
-    type: Person # inherits all properties from type `Person`
+    type: Person
     properties:
       clearanceLevel:
         enum: [ low, high ]
   AlertableAdmin:
-    type: Admin # inherits all properties from type `Admin`
+    type: Admin
     properties:
-      phone: Phone # inherits all properties from type `Phone`; uses shortcut syntax
-  Alertable: Manager | AlertableAdmin # union type; either a `Manager` or `AlertableAdmin`
+      phone: Phone
+  Alertable: Manager | AlertableAdmin
+traits:
+  visibility:
+    queryParameters:
+      visibility:
+        type: string
+        required: false
+        description: |
+          The visibility of the property.
+          The visibility of the new file. This parameter is only relevant when convert=false.
+
+          Acceptable values are:
+          - **"DEFAULT"**: The visibility of the new file is determined by the user's default visibility/sharing policies. (default)
+          - **"PRIVATE"**: The new file will be visible to only the owner.
+
+          The visibility of the new file. This parameter is only relevant when the source is not a native Google Doc and convert=false.
+
+          Acceptable values are:
+          - **DEFAULT"**: The visibility of the new file is determined by the user's default visibility/sharing policies. (default)
+          - **"PRIVATE"**: The new file will be visible to only the owner.
+
 /{orgId}:
   uriParameters:
     orgId:
       type: string
   get:
+    is: [visibility]
     queryParameters:
       test: string
     responses:
