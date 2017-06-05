@@ -151,6 +151,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.body.dispatchEvent(event);
         assert.isTrue(element.noTryIt);
       });
+
+      test('Should compute hasTraits property', function() {
+        assert.equal(element.hasTraits, true);
+      });
+
+      test('Should display list of traits', function() {
+        TestHelpers.forceXIfStamp(element);
+        var span = Polymer.dom(element.root).querySelector('.trait-value');
+        assert.isOk(span, 'Traits values container is defined.');
+        assert.equal(span.textContent, 'visibility', 'Trait list text content equals "visibility"');
+      });
     });
     </script>
 
