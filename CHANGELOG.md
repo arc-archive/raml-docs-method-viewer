@@ -1,3 +1,22 @@
+<a name="0.1.14"></a>
+## [0.1.14](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.13...v0.1.14) (2017-06-05)
+
+
+### Fix
+
+* Added missing behavior ([93697a612fb537f9714093a8d3a28044786864e5](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/93697a612fb537f9714093a8d3a28044786864e5))
+* Removed prtoperty setters on unknown properties ([647183238787d1c1e307447c0b553c8483c7ea39](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/647183238787d1c1e307447c0b553c8483c7ea39))
+
+### New
+
+* Added traits list to the method documentation view ([224ae43f5acfd35a0e0743642e308767193affec](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/224ae43f5acfd35a0e0743642e308767193affec))
+
+### Update
+
+* Added tests for traits display ([71357ca563b75b6c7b1666903b6bb4ce2c3f452f](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/71357ca563b75b6c7b1666903b6bb4ce2c3f452f))
+
+
+
 <a name="0.1.13"></a>
 ## [0.1.13](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.12...v0.1.13) (2017-05-11)
 
