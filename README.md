@@ -19,7 +19,7 @@ To properly compute values displayed in the view it needs to know its
 Parent is used to display title of the method.
 
 ## Disabling the "try it" button
-You can either set the `noTryit` property to true (or set the `no-tryit` attribute on the element)
+You can either set the `noTryIt` property to true (or set the `no-try-it` attribute on the element)
 or send for the `tryit-toggle` custom event with the `state` property set to the detail object.
 The element will listen on `window` object for the event.
 
@@ -39,9 +39,18 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-url-font-style` | font-style of the URL value | `italic` |
 `--raml-docs-method-viewer-url` | Mixin applied to the URL field | `{}` |
 `--action-button` | Mixin applied to the main action button (Try it) | `{}`
+`--action-button-hover` | Mixin applied to the main action button on hover (Try it) | `{}`
 `--arc-font-headline` | Mixin applied to the h1 element (API title) | `{}`
 `--arc-font-title` | Mixin applied to the h2 elements (section title) | `{}`
 `--arc-font-subhead` | Mixin applied to the h3 elements (section sub-titles) | `{}`
+`--toggle-button` | Mixin applied to toggling button (show/hide) | `{}`
+`--toggle-button-hover` | Mixin applied to toggling button on hover (show/hide) | `{}`
+`--raml-docs-method-viewer-title-area-actions` | Mixin applied to toggling actions area | `{}`
+`--raml-docs-method-viewer-traits-list` | Mixin applied to the list of traits container | `{}`
+`--raml-docs-method-viewer-traits-list-values` | Mixin applied to the list of traits values (names) | `{}`
+`--raml-docs-method-viewer-traits-list-label` | Mixin applied to the list of traits list label | `{}`
+`--raml-docs-method-viewer-traits-list-values-color` | Color of the traits list values (names) | `rgba(0,0,0,0.94)`
+`--raml-docs-method-viewer-traits-list-label-color` | Color of the traits list label | `rgba(0,0,0,0.74)`
 
 
 

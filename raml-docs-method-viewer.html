@@ -45,7 +45,7 @@ To properly compute values displayed in the view it needs to know its
 Parent is used to display title of the method.
 
 ## Disabling the "try it" button
-You can either set the `noTryit` property to true (or set the `no-tryit` attribute on the element)
+You can either set the `noTryIt` property to true (or set the `no-try-it` attribute on the element)
 or send for the `tryit-toggle` custom event with the `state` property set to the detail object.
 The element will listen on `window` object for the event.
 
@@ -72,6 +72,11 @@ Custom property | Description | Default
 `--toggle-button` | Mixin applied to toggling button (show/hide) | `{}`
 `--toggle-button-hover` | Mixin applied to toggling button on hover (show/hide) | `{}`
 `--raml-docs-method-viewer-title-area-actions` | Mixin applied to toggling actions area | `{}`
+`--raml-docs-method-viewer-traits-list` | Mixin applied to the list of traits container | `{}`
+`--raml-docs-method-viewer-traits-list-values` | Mixin applied to the list of traits values (names) | `{}`
+`--raml-docs-method-viewer-traits-list-label` | Mixin applied to the list of traits list label | `{}`
+`--raml-docs-method-viewer-traits-list-values-color` | Color of the traits list values (names) | `rgba(0,0,0,0.94)`
+`--raml-docs-method-viewer-traits-list-label-color` | Color of the traits list label | `rgba(0,0,0,0.74)`
 
 @group RAML Elements
 @element raml-docs-method-viewer
@@ -164,7 +169,7 @@ Custom property | Description | Default
       @apply(--action-button-hover);
     }
 
-    :host([no-tryit]) .action {
+    :host([no-try-it]) .action {
       display: none !important;
     }
 
@@ -235,9 +240,25 @@ Custom property | Description | Default
       @apply(--raml-docs-method-viewer-title-area-actions);
     }
 
+    .traits-list {
+      margin-bottom: 8px;
+      color: rgba(0,0,0,0.74);
+      @apply(--raml-docs-method-viewer-traits-list);
+    }
+
+    .trait-value {
+      color: var(--raml-docs-method-viewer-traits-list-values-color, rgba(0,0,0,0.94));
+      @apply(--raml-docs-method-viewer-traits-list-values);
+    }
+
+    .trait-label {
+      color: var(--raml-docs-method-viewer-traits-list-label-color, inherit);
+      @apply(--raml-docs-method-viewer-traits-list-label);
+    }
     </style>
     <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
     <section class="container">
+
       <div class="title-area">
         <h1 class="title">
           <span>[[parentName]]</span>
@@ -248,6 +269,13 @@ Custom property | Description | Default
           <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
         </div>
       </div>
+
+      <template is="dom-if" if="[[hasTraits]]">
+        <div class="traits-list">
+          <span class="trait-label">Traits:</span>
+          <span class="trait-value">[[_computeTraitsList(raml.is)]]</span>
+        </div>
+      </template>
 
       <div hidden$="[[_computeHideMethodDesc(raml.description)]]" class="method-desc">
         <marked-element markdown="[[raml.description]]">
@@ -296,7 +324,7 @@ Custom property | Description | Default
             <docs-headers-table
               has-headers="{{hasHeaders}}"
               headers="[[raml.headers]]"
-              narrow=[[narrow]] auto-hide></docs-headers-table>
+              auto-hide></docs-headers-table>
           </iron-collapse>
         </section>
 
@@ -318,7 +346,7 @@ Custom property | Description | Default
 
       <section class="response-doc" hidden$="[[!hasResponses]]">
         <h2>Response</h2>
-        <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]" narrow="[[narrow]]"></raml-docs-response-panel>
+        <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
       </section>
 
       <div class="bottom action">
@@ -329,6 +357,8 @@ Custom property | Description | Default
   <script>
   Polymer({
     is: 'raml-docs-method-viewer',
+
+    behaviors: [Polymer.RamlBehavior],
     /**
      * Fired when the user pressed the `try it` button.
      *
@@ -361,6 +391,11 @@ Custom property | Description | Default
       hasParameters: Boolean,
       // Value obtained from the `raml-docs-response-panel`
       hasResponses: Boolean,
+      // If true, the method has traits applied to it.
+      hasTraits: {
+        type: Boolean,
+        readOnly: true
+      },
       /**
        * If true then the element will start listen for the
        * `raml-is-method-changed`, `raml-selected-object-changed` and
@@ -378,7 +413,7 @@ Custom property | Description | Default
         reflectToAttribute: true
       },
       // If set then the `tryit` button will be hidden.
-      noTryit: {
+      noTryIt: {
         type: Boolean,
         reflectToAttribute: true
       },
@@ -465,10 +500,17 @@ Custom property | Description | Default
         '_selectedParentChangeHandler');
     },
 
-    _objectChanged: function() {
+    _objectChanged: function(record) {
       // this.hidden = false;
-      if (!this.raml) {
+      var raml = record && record.base;
+      if (!raml) {
+        this._setHasTraits(false);
         return;
+      }
+      if (raml.is && raml.is.length) {
+        this._setHasTraits(true);
+      } else {
+        this._setHasTraits(false);
       }
     },
 
@@ -550,7 +592,25 @@ Custom property | Description | Default
     },
 
     _toggleTryitHandler: function(e) {
-      this.noTryit = !e.detail.state;
+      this.noTryIt = !e.detail.state;
+    },
+    // Computes list of traits names to display in the view.
+    _computeTraitsList: function(traits) {
+      if (!traits || !traits.length) {
+        return;
+      }
+      return traits.map(function(trait) {
+        if (typeof trait === 'string') {
+          return trait;
+        }
+        if (trait.name) {
+          return trait.name;
+        }
+        try {
+          var keys = Object.keys(trait);
+          return keys[0];
+        } catch (e) {}
+      }).join(', ');
     }
   });
   </script>

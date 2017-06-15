@@ -1,3 +1,43 @@
+<a name="0.1.15"></a>
+## [0.1.15](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.14...v0.1.15) (2017-06-05)
+
+
+
+
+<a name="0.1.14"></a>
+## [0.1.14](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.13...v0.1.14) (2017-06-05)
+
+
+### Fix
+
+* Added missing behavior ([93697a612fb537f9714093a8d3a28044786864e5](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/93697a612fb537f9714093a8d3a28044786864e5))
+* Removed prtoperty setters on unknown properties ([647183238787d1c1e307447c0b553c8483c7ea39](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/647183238787d1c1e307447c0b553c8483c7ea39))
+
+### New
+
+* Added traits list to the method documentation view ([224ae43f5acfd35a0e0743642e308767193affec](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/224ae43f5acfd35a0e0743642e308767193affec))
+
+### Update
+
+* Added tests for traits display ([71357ca563b75b6c7b1666903b6bb4ce2c3f452f](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/71357ca563b75b6c7b1666903b6bb4ce2c3f452f))
+
+
+
+<a name="0.1.13"></a>
+## [0.1.13](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.12...v0.1.13) (2017-05-11)
+
+
+### Fix
+
+* Fixed hidding the try it button after property name change ([280bdbbd47102a6c9031ae4552f19ce021481fbd](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/280bdbbd47102a6c9031ae4552f19ce021481fbd))
+* Fixed test cases after property name change ([a64937ca91dc5e96a5972a818e9cb86e8d6c3091](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/a64937ca91dc5e96a5972a818e9cb86e8d6c3091))
+
+### Update
+
+* Renamed noTryit property to noTryIt ([b276d17510c2fa23273b6999bdca5730522acf6e](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/b276d17510c2fa23273b6999bdca5730522acf6e))
+
+
+
 <a name="0.1.12"></a>
 ## [0.1.12](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.11...v0.1.12) (2017-04-12)
 
