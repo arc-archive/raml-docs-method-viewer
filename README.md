@@ -49,8 +49,9 @@ Custom property | Description | Default
 `--raml-docs-method-viewer-traits-list` | Mixin applied to the list of traits container | `{}`
 `--raml-docs-method-viewer-traits-list-values` | Mixin applied to the list of traits values (names) | `{}`
 `--raml-docs-method-viewer-traits-list-label` | Mixin applied to the list of traits list label | `{}`
+`--raml-docs-method-viewer-traits-list-color` | Color of the traits list section | `rgba(0,0,0,0.74)`
 `--raml-docs-method-viewer-traits-list-values-color` | Color of the traits list values (names) | `rgba(0,0,0,0.94)`
-`--raml-docs-method-viewer-traits-list-label-color` | Color of the traits list label | `rgba(0,0,0,0.74)`
+`--raml-docs-method-viewer-traits-list-label-color` | Color of the traits list label | `inherit`
 
 
 
