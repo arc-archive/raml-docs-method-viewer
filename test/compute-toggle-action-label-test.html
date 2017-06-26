@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../../raml-js-parser/raml-js-parser.html">
+    <link rel="import" href="../../raml-json-enhance/raml-json-enhance.html">
+    <link rel="import" href="../raml-docs-method-viewer.html">
+    <link rel="import" href="../../fetch-polyfill/fetch-polyfill.html">
+    <link rel="import" href="../../promise-polyfill/promise-polyfill.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <raml-docs-method-viewer></raml-docs-method-viewer>
+      </template>
+    </test-fixture>
+
+    <script>
+    /* global fixture, assert */
+    suite('_computeToggleActionLabel()', function() {
+      var element;
+
+      setup(function() {
+        element = fixture('basic');
+      });
+
+      test('Without arguments', function() {
+        var name = element._computeToggleActionLabel();
+        assert.equal(name, 'Show');
+      });
+
+      test('With falsy argument', function() {
+        var name = element._computeToggleActionLabel(0);
+        assert.equal(name, 'Show');
+      });
+
+      test('With trylly argument', function() {
+        var name = element._computeToggleActionLabel(1);
+        assert.equal(name, 'Hide');
+      });
+    });
+    </script>
+
+  </body>
+</html>
