@@ -295,7 +295,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Parameters</h3>
             <div class="title-area-actions">
-              <paper-button data-section="parameters" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle parameters details">
+              <paper-button data-section="parameters" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle parameters details">
                 [[_computeToggleActionLabel(parametersOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(parametersOpened)]]"></iron-icon>
               </paper-button>
@@ -314,7 +314,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Headers</h3>
             <div class="title-area-actions">
-              <paper-button data-section="headers" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle headers details">
+              <paper-button data-section="headers" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle headers details">
                 [[_computeToggleActionLabel(headersOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(headersOpened)]]"></iron-icon>
               </paper-button>
@@ -332,7 +332,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Body</h3>
             <div class="title-area-actions">
-              <paper-button data-section="body" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle body details">
+              <paper-button data-section="body" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle body details">
                 [[_computeToggleActionLabel(bodyOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(bodyOpened)]]"></iron-icon>
               </paper-button>
@@ -572,13 +572,41 @@ Custom property | Description | Default
      * section to toggle. Variable that controls the state (Boolean value)
      * must be called section + 'Opened'.
      */
-    toggleCollapseSection: function(e) {
-      var section = Polymer.dom(e).localTarget.dataset.section;
+    _toggleCollapseSection: function(e) {
+      var target = this._getPathElement(e, 'paper-button');
+      if (!target) {
+        return console.warn('Toggle element not in path ', e.path);
+      }
+      var section = target.dataset.section;
       if (!section) {
         return console.warn('Toggle section not fond in path ', e.path);
       }
       var variable = section + 'Opened';
       this[variable] = !this[variable];
+    },
+
+    /**
+     * Extracts an element from the path. It is iterating over the path to find
+     * an element that matches `nodeName`.
+     *
+     * @param {String} nodeName A node to find in the path.
+     * @return {HTMLElement|dndefined} A first node in the path that matches the
+     * name or undefiend.
+     */
+    _getPathElement: function(e, nodeName) {
+      if (!(e instanceof Polymer.DomApi.Event)) {
+        e = Polymer.dom(e);
+      }
+      var path = e.path;
+      if (!path || !path.length) {
+        return e.rootTarget;
+      }
+      nodeName = nodeName.toUpperCase();
+      for (var i = 0, len = path.length; i < len; i++) {
+        if (path[i] && path[i].nodeName && path[i].nodeName === nodeName) {
+          return path[i];
+        }
+      }
     },
 
     // Computes class for the toggle's button icon.
