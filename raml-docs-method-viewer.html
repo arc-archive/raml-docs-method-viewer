@@ -170,10 +170,6 @@ Custom property | Description | Default
       @apply(--action-button-hover);
     }
 
-    :host([no-try-it]) .action {
-      display: none !important;
-    }
-
     .bottom.action {
       @apply(--layout-horizontal);
       @apply(--layout-end-justified);
@@ -267,9 +263,11 @@ Custom property | Description | Default
           <span hidden$="[[!parentName]]">:</span>
           <span class="method-name">[[methodName]]</span>
         </h1>
-        <div class="action">
-          <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
-        </div>
+        <template is="dom-if" if="[[!noTryIt]]">
+          <div class="action">
+            <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+          </div>
+        </template>
       </div>
 
       <template is="dom-if" if="[[hasTraits]]">
@@ -351,9 +349,12 @@ Custom property | Description | Default
         <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
       </section>
 
-      <div class="bottom action">
-        <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
-      </div>
+      <template is="dom-if" if="[[!noTryIt]]">
+        <div class="bottom action">
+          <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+        </div>
+      </template>
+
     </section>
   </template>
   <script>
@@ -417,7 +418,7 @@ Custom property | Description | Default
       // If set then the `tryit` button will be hidden.
       noTryIt: {
         type: Boolean,
-        reflectToAttribute: true
+        value: false
       },
       /**
        * If set it will renders the view in the narrow layout.
