@@ -75,9 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         element.raml = raml;
       });
 
-      function isVisible(elm) {
-        return !!(elm.offsetWidth || elm.offsetHeight || elm.getClientRects().length);
-      }
+      // function isVisible(elm) {
+      //   return !!(elm.offsetWidth || elm.offsetHeight || elm.getClientRects().length);
+      // }
 
       test('hasBody should be false', function() {
         assert.equal(element.hasBody, false);
@@ -103,28 +103,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(element.hasResponses, true);
       });
 
-      test('noTryIt hiddes action button', function() {
+      test('noTryIt hiddes action buttons', function() {
         element.noTryIt = true;
         TestHelpers.forceXIfStamp(element);
 
         var buttons = Polymer.dom(element.root).querySelectorAll('.action-button');
-        var visible = isVisible(buttons[0]);
-        assert.isFalse(visible, 'First action button is invisible');
-        visible = isVisible(buttons[1]);
-        assert.isFalse(visible, 'Second action button is invisible');
+        assert.lengthOf(buttons, 0);
       });
 
       test('documentation sections are opened by default', function() {
-        assert.equal(element.parametersOpened, true, 'Parameters section is opened');
-        assert.equal(element.headersOpened, true, 'Headers section is opened');
-        assert.equal(element.bodyOpened, true, 'Body section is opened');
+        assert.isTrue(element.parametersOpened, 'Parameters section is opened');
+        assert.isTrue(element.headersOpened, 'Headers section is opened');
+        assert.isTrue(element.bodyOpened, 'Body section is opened');
       });
 
       test('Parameters toggle event is handled correctly', function() {
         var button = Polymer.dom(element.root).querySelector('[data-section="parameters"]');
-        assert.isDefined(button, 'Parameters toggle button is defined');
         MockInteractions.tap(button);
-        assert.equal(element.parametersOpened, false, 'Parameters section is closed');
+        assert.isFalse(element.parametersOpened);
+      });
+
+      test('Parameters toggle event is handled correctly when clicking on the icon', function() {
+        var button = Polymer.dom(element.root).querySelector('[data-section="parameters"] iron-icon');
+        MockInteractions.tap(button);
+        assert.isFalse(element.parametersOpened);
       });
 
       test('Headers toggle event is handled correctly', function() {

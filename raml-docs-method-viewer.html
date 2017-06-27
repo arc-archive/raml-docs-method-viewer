@@ -17,7 +17,6 @@ the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
 <link rel="import" href="../docs-parameters-table/docs-headers-table.html">
-<link rel="import" href="../docs-parameters-table/docs-body-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
 <link rel="import" href="../raml-docs-response-panel/raml-docs-response-panel.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
@@ -170,10 +169,6 @@ Custom property | Description | Default
       @apply(--action-button-hover);
     }
 
-    :host([no-try-it]) .action {
-      display: none !important;
-    }
-
     .bottom.action {
       @apply(--layout-horizontal);
       @apply(--layout-end-justified);
@@ -267,9 +262,11 @@ Custom property | Description | Default
           <span hidden$="[[!parentName]]">:</span>
           <span class="method-name">[[methodName]]</span>
         </h1>
-        <div class="action">
-          <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
-        </div>
+        <template is="dom-if" if="[[!noTryIt]]">
+          <div class="action">
+            <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+          </div>
+        </template>
       </div>
 
       <template is="dom-if" if="[[hasTraits]]">
@@ -297,7 +294,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Parameters</h3>
             <div class="title-area-actions">
-              <paper-button data-section="parameters" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle parameters details">
+              <paper-button data-section="parameters" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle parameters details">
                 [[_computeToggleActionLabel(parametersOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(parametersOpened)]]"></iron-icon>
               </paper-button>
@@ -316,7 +313,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Headers</h3>
             <div class="title-area-actions">
-              <paper-button data-section="headers" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle headers details">
+              <paper-button data-section="headers" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle headers details">
                 [[_computeToggleActionLabel(headersOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(headersOpened)]]"></iron-icon>
               </paper-button>
@@ -334,7 +331,7 @@ Custom property | Description | Default
           <div class="section-title-area">
             <h3>Body</h3>
             <div class="title-area-actions">
-              <paper-button data-section="body" on-tap="toggleCollapseSection" class="toggle-button" title="Toogle body details">
+              <paper-button data-section="body" on-tap="_toggleCollapseSection" class="toggle-button" title="Toogle body details">
                 [[_computeToggleActionLabel(bodyOpened)]]
                 <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(bodyOpened)]]"></iron-icon>
               </paper-button>
@@ -351,9 +348,12 @@ Custom property | Description | Default
         <raml-docs-response-panel has-responses="{{hasResponses}}" responses="[[raml.responses]]"></raml-docs-response-panel>
       </section>
 
-      <div class="bottom action">
-        <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
-      </div>
+      <template is="dom-if" if="[[!noTryIt]]">
+        <div class="bottom action">
+          <paper-button class="action-button" on-tap="_tryIt">Try it</paper-button>
+        </div>
+      </template>
+
     </section>
   </template>
   <script>
@@ -417,7 +417,7 @@ Custom property | Description | Default
       // If set then the `tryit` button will be hidden.
       noTryIt: {
         type: Boolean,
-        reflectToAttribute: true
+        value: false
       },
       /**
        * If set it will renders the view in the narrow layout.
@@ -571,13 +571,41 @@ Custom property | Description | Default
      * section to toggle. Variable that controls the state (Boolean value)
      * must be called section + 'Opened'.
      */
-    toggleCollapseSection: function(e) {
-      var section = Polymer.dom(e).localTarget.dataset.section;
+    _toggleCollapseSection: function(e) {
+      var target = this._getPathElement(e, 'paper-button');
+      if (!target) {
+        return console.warn('Toggle element not in path ', e.path);
+      }
+      var section = target.dataset.section;
       if (!section) {
         return console.warn('Toggle section not fond in path ', e.path);
       }
       var variable = section + 'Opened';
       this[variable] = !this[variable];
+    },
+
+    /**
+     * Extracts an element from the path. It is iterating over the path to find
+     * an element that matches `nodeName`.
+     *
+     * @param {String} nodeName A node to find in the path.
+     * @return {HTMLElement|dndefined} A first node in the path that matches the
+     * name or undefiend.
+     */
+    _getPathElement: function(e, nodeName) {
+      if (!(e instanceof Polymer.DomApi.Event)) {
+        e = Polymer.dom(e);
+      }
+      var path = e.path;
+      if (!path || !path.length) {
+        return e.rootTarget;
+      }
+      nodeName = nodeName.toUpperCase();
+      for (var i = 0, len = path.length; i < len; i++) {
+        if (path[i] && path[i].nodeName && path[i].nodeName === nodeName) {
+          return path[i];
+        }
+      }
     },
 
     // Computes class for the toggle's button icon.
