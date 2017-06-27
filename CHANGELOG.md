@@ -1,3 +1,27 @@
+<a name="0.1.18"></a>
+## [0.1.18](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.17...v0.1.18) (2017-06-27)
+
+
+### Fix
+
+* Fixed an issue when toggling documentation sections might not work because wrong event target was reported to the function. Now the function look for specific node in the event path to search for the section name information. ([a2a9d97579a35496785389f7fadbfc38ba6a2dc0](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/a2a9d97579a35496785389f7fadbfc38ba6a2dc0))
+
+### New
+
+* Added test RAML definition to the demo page. ([8b1fb7352da0694104832e97e491a7030ec7ef26](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/8b1fb7352da0694104832e97e491a7030ec7ef26))
+
+### Update
+
+* Removed cache directive from Travis configuration. ([5a1f9afd3f43d87bf8b58ff9808c695f539539b7](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/5a1f9afd3f43d87bf8b58ff9808c695f539539b7))
+* Removed reference to deleted components. ([60722f0c5c697ba9c355e32961e9ae519625ad67](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/60722f0c5c697ba9c355e32961e9ae519625ad67))
+* Removed sudo from Travis configuration ([cc1aa1b9bf24ec5f6fcfc6fdd83a2c27324503e6](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/cc1aa1b9bf24ec5f6fcfc6fdd83a2c27324503e6))
+* The `noTryIt` attribute is now handled by the Polymer data binding instead of CSS properties. ([e174becf9a72be2646fedbbd299b00c25c3a025a](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/e174becf9a72be2646fedbbd299b00c25c3a025a))
+* Updated dependencies versions for testing and demo pages. Also changes test commands. ([8e8823e91841be698f36a92712ed4721cece1547](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/8e8823e91841be698f36a92712ed4721cece1547))
+* Updated lint command in Travis configuration. ([45b2e8e8ed8ddb231280b4ff3b04b64b7cc4a87b](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/45b2e8e8ed8ddb231280b4ff3b04b64b7cc4a87b))
+* Updated tests to cover more cases. ([fcc8ac953842eb5385af07845a87167ca8179682](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/fcc8ac953842eb5385af07845a87167ca8179682))
+
+
+
 <a name="0.1.17"></a>
 ## [0.1.17](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.16...v0.1.17) (2017-06-15)
 
