@@ -1,5 +1,15 @@
 #%RAML 1.0
 title: My API with Types
+baseUri: https://{host}:{port}
+baseUriParameters:
+  host:
+    displayName: Domain name / ip address
+    type: string
+    default: localhost
+  port:
+    displayName: Port
+    type: integer
+    default: 80
 mediaType: application/json
 types:
   Org:
