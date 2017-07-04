@@ -61,13 +61,33 @@ traits:
           Acceptable values are:
           - **DEFAULT"**: The visibility of the new file is determined by the user's default visibility/sharing policies. (default)
           - **"PRIVATE"**: The new file will be visible to only the owner.
+annotationTypes:
+  annotationTest: nil
+  deprecated: string
+  clearanceLevel:
+    properties:
+      level:
+        enum: [ low, medium, high ]
+        required: true
+      signature:
+        pattern: "\\d{3}-\\w{12}"
+        required: true
 
 /{orgId}:
+  (deprecated): This endpoint is deprecated and will be removed.
   uriParameters:
     orgId:
       type: string
+      (annotationTest):
+      description: Hello URI parameter
+      default: id1234
   get:
     is: [visibility]
+    description: |
+      This is a `GET` method and this description is in Markdown.
+    (clearanceLevel):
+      level: high
+      signature: 230-ghtwvfrs1itr
     queryParameters:
       test: string
     responses:
