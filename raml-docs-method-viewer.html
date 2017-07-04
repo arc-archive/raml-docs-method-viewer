@@ -18,6 +18,7 @@ the License.
 <link rel="import" href="../docs-parameters-table/docs-parameters-table.html">
 <link rel="import" href="../docs-parameters-table/docs-headers-table.html">
 <link rel="import" href="../docs-parameters-table/docs-body-parameters-table.html">
+<link rel="import" href="../raml-annotations-display/raml-annotations-display.html">
 <link rel="import" href="../raml-docs-response-panel/raml-docs-response-panel.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../marked-element/marked-element.html">
@@ -252,6 +253,11 @@ Custom property | Description | Default
       color: var(--raml-docs-method-viewer-traits-list-label-color, inherit);
       @apply(--raml-docs-method-viewer-traits-list-label);
     }
+
+    raml-annotations-display {
+      color: rgba(0,0,0,0.74);
+      margin-bottom: 12px;
+    }
     </style>
     <iron-media-query query="(max-width: [[narrowWidth]])" query-matches="{{narrow}}"></iron-media-query>
     <section class="container">
@@ -274,6 +280,10 @@ Custom property | Description | Default
           <span class="trait-label">Traits:</span>
           <span class="trait-value">[[_computeTraitsList(raml.is)]]</span>
         </div>
+      </template>
+
+      <template is="dom-if" if="[[hasValue(raml.annotations)]]">
+        <raml-annotations-display annotations="[[raml.annotations]]"></raml-annotations-display>
       </template>
 
       <div hidden$="[[_computeHideMethodDesc(raml.description)]]" class="method-desc">
@@ -641,6 +651,26 @@ Custom property | Description | Default
           return keys[0];
         } catch (e) {}
       }).join(', ');
+    },
+
+    /**
+     * Check if passed object is set.
+     * 0 (zero) returns true while empty string returns false.
+     *
+     * @return {Boolean} True/False depending if passed object has a value.
+     */
+    hasValue: function(obj) {
+      var type = typeof obj;
+      if (type === 'number' && obj === 0) {
+        return true;
+      }
+      if (type === 'boolean') {
+        return true;
+      }
+      if (type === 'string' && obj === '') {
+        return true;
+      }
+      return !!obj;
     }
   });
   </script>
