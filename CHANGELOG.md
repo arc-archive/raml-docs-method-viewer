@@ -1,3 +1,13 @@
+<a name="0.1.21"></a>
+## [0.1.21](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.20...v0.1.21) (2017-07-04)
+
+
+### New
+
+* Added annotations to the description of the method.  ([bd793b19d51a224ad826992d8ab527b89ed00dcf](https://github.com/advanced-rest-client/raml-docs-method-viewer/commit/bd793b19d51a224ad826992d8ab527b89ed00dcf))
+
+
+
 <a name="0.1.20"></a>
 ## [0.1.20](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.19...v0.1.20) (2017-07-04)
 
