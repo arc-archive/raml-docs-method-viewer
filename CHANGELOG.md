@@ -1,3 +1,9 @@
+<a name="0.1.22"></a>
+## [0.1.22](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.21...v0.1.22) (2017-07-04)
+
+
+
+
 <a name="0.1.21"></a>
 ## [0.1.21](https://github.com/advanced-rest-client/raml-docs-method-viewer/compare/0.1.20...v0.1.21) (2017-07-04)
 
